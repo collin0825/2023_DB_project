@@ -17,7 +17,7 @@ orderManager | 應徵者管理 |
 infoManager | 資料維護 |
 dashboard | 資料分析 |
 
-## 助教 readme
+# 助教 Readme
 
 
 [![GitHub release](https://img.shields.io/github/release/Text-Analytics-and-Retrieval/db_class2023)](https://github.com/Text-Analytics-and-Retrieval/db_class2023/releases/latest)
