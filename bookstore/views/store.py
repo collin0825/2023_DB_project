@@ -35,18 +35,18 @@ def bookstore():
         end = page * 9
         search = request.values.get('keyword')
         keyword = search
-        
-        cursor.prepare('SELECT * FROM PRODUCT WHERE PNAME LIKE :search')
+        cursor.prepare('SELECT * FROM VACANCY WHERE VNAME LIKE :search')
         cursor.execute(None, {'search': '%' + keyword + '%'})
         book_row = cursor.fetchall()
+        
         book_data = []
         final_data = []
         
         for i in book_row:
             book = {
-                '商品編號': i[0],
-                '商品名稱': i[1],
-                '商品價格': i[2]
+                '職缺編號': i[0],
+                '職缺名稱': i[2],
+                '職缺內容': i[3]
             }
             book_data.append(book)
             total = total + 1
@@ -67,7 +67,7 @@ def bookstore():
         pid = request.args['pid']
         data = Product.get_product(pid)
         
-        pname = data[1]
+        vname = data[2]
         price = data[2]
         category = data[3]
         description = data[4]
@@ -95,9 +95,9 @@ def bookstore():
         
         for i in book_row:
             book = {
-                '商品編號': i[0],
-                '商品名稱': i[1],
-                '商品價格': i[2]
+                '職缺編號': i[0],
+                '職缺名稱': i[2],
+                '職缺內容': i[3]
             }
             book_data.append(book)
             
@@ -114,7 +114,7 @@ def bookstore():
         single = 1
         search = request.values.get('keyword')
         keyword = search
-        cursor.prepare('SELECT * FROM PRODUCT WHERE PNAME LIKE :search')
+        cursor.prepare('SELECT * FROM VACANCY WHERE VNAME LIKE :search')
         cursor.execute(None, {'search': '%' + keyword + '%'})
         book_row = cursor.fetchall()
         book_data = []
@@ -122,9 +122,9 @@ def bookstore():
         
         for i in book_row:
             book = {
-                '商品編號': i[0],
-                '商品名稱': i[1],
-                '商品價格': i[2]
+                '職缺編號': i[0],
+                '職缺名稱': i[2],
+                '職缺內容': i[3]
             }
 
             book_data.append(book)
@@ -143,9 +143,9 @@ def bookstore():
         temp = 0
         for i in book_row:
             book = {
-                '商品編號': i[0],
-                '商品名稱': i[1],
-                '商品價格': i[2],
+                '職缺編號': i[0],
+                '職缺名稱': i[2],
+                '職缺內容': i[3]
             }
             if len(book_data) < 9:
                 book_data.append(book)

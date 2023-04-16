@@ -79,12 +79,12 @@ class Product():
         sql = 'SELECT COUNT(*) FROM PRODUCT'
         return DB.fetchone(DB.execute( DB.connect(), sql))
     
-    def get_product(pid):
-        sql ='SELECT * FROM PRODUCT WHERE PID = :id'
-        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': pid}))
+    def get_product(vid):
+        sql ='SELECT * FROM VACANCY WHERE VID = :id'
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': vid}))
 
     def get_all_product():
-        sql = 'SELECT * FROM PRODUCT'
+        sql = 'SELECT * FROM VACANCY'
         return DB.fetchall(DB.execute( DB.connect(), sql))
     
     def get_name(pid):
