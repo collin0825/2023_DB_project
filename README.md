@@ -1,4 +1,15 @@
-# 中山網路書店
+# 中山求職網
+## 檔名頁面對照表
+
+檔名 | 對照頁面 |
+--- | --- |
+productManager | 職缺管理 |
+orderManager | 應徵履歷管理 |
+infoManager | 資料維護 |
+
+## 助教 readme
+
+
 [![GitHub release](https://img.shields.io/github/release/Text-Analytics-and-Retrieval/db_class2023)](https://github.com/Text-Analytics-and-Retrieval/db_class2023/releases/latest)
 [![GitHub license](https://img.shields.io/github/license/Text-Analytics-and-Retrieval/db_class2023)](https://github.com/Text-Analytics-and-Retrieval/db_class2023/main/LICENSE)
 
