@@ -48,8 +48,10 @@ def login():
             login_user(user)
 
             if( identity == 'applicant'):
+                print(identity)
                 return redirect(url_for('bookstore.bookstore'))
             else:
+                print(identity)
                 return redirect(url_for('manager.productManager'))
         
         else:

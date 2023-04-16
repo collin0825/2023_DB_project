@@ -25,7 +25,7 @@ def home():
 @login_required
 def productManager():
     if request.method == 'GET':
-        if(current_user.role == 'user'):
+        if(current_user.role == 'applicant'):
             flash('No permission')
             return redirect(url_for('index'))
         
