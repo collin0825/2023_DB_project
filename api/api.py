@@ -47,7 +47,7 @@ def login():
             user.id = user_id
             login_user(user)
 
-            if( identity == 'user'):
+            if( identity == 'applicant'):
                 return redirect(url_for('bookstore.bookstore'))
             else:
                 return redirect(url_for('manager.productManager'))
