@@ -29,13 +29,13 @@ def user_loader(userid):
 def login():
     if request.method == 'POST':
 
-        account = request.form['account']
+        account = request.form['mid']
         password = request.form['password']
         data = Member.get_member(account) 
 
         try:
-            DB_password = data[0][1]
-            user_id = data[0][2]
+            member_id = data[0][0]
+            DB_password = data[0][2]
             identity = data[0][3]
 
         except:
@@ -44,7 +44,7 @@ def login():
 
         if(DB_password == password ):
             user = User()
-            user.id = user_id
+            user.id = member_id 
             login_user(user)
 
             if( identity == 'user'):
@@ -64,19 +64,19 @@ def login():
 @api.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
-        user_account = request.form['account']
+        user_mid = request.form['mid']
         exist_account = Member.get_all_account()
         account_list = []
         for i in exist_account:
             account_list.append(i[0])
 
-        if(user_account in account_list):
+        if(user_mid in account_list):
             flash('Falied!')
             return redirect(url_for('api.register'))
         else:
             input = { 
+                'mid':user_mid, 
                 'name': request.form['username'], 
-                'account':user_account, 
                 'password':request.form['password'], 
                 'identity':request.form['identity'] 
             }

@@ -29,16 +29,16 @@ class DB():
         connection.commit()
 
 class Member():
-    def get_member(account):
-        sql = "SELECT ACCOUNT, PASSWORD, MID, IDENTITY, NAME FROM MEMBER WHERE ACCOUNT = :id"
-        return DB.fetchall(DB.execute_input(DB.prepare(sql), {'id' : account}))
+    def get_member(mid):
+        sql = "SELECT MID, NAME, PASSWORD, IDENTITY, NAME FROM MEMBER WHERE MID = :mid"
+        return DB.fetchall(DB.execute_input(DB.prepare(sql), {'mid' : mid}))
     
     def get_all_account():
-        sql = "SELECT ACCOUNT FROM MEMBER"
+        sql = "SELECT MID FROM MEMBER"
         return DB.fetchall(DB.execute(DB.connect(), sql))
 
     def create_member(input):
-        sql = 'INSERT INTO MEMBER VALUES (null, :name, :account, :password, :identity)'
+        sql = 'INSERT INTO MEMBER VALUES (:mid, :name, :password, :identity)'
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
     
