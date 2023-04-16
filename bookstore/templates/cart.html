@@ -23,10 +23,11 @@
   <form method="post" action={{ url_for('bookstore.cart') }}>
     <table class="table table-bordered">
       <tr>
-        <th><center>商品編號</center></th>
-        <th><center>商品名稱</center></th>
-        <th><center>商品價格</center></th>
-        <th><center>數量</center></th>
+        <th><center>職缺編號</center></th>
+        <th><center>公司名稱</center></th>
+        <th><center>工作崗位</center></th>
+        <th><center>職缺剩餘數量</center></th>
+        <th><center>薪水待遇</center></th>
         <th><center>商品操作</center></th>
       </tr>
       {% for book in data %}
