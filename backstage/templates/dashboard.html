@@ -5,14 +5,15 @@
 {% block title %}後台資料分析{% endblock title%}
 {% block content %}
 
+
 <div class="my-3 p-3 bg-body rounded shadow-sm">
   <!-- Dashboard -->
   <div id="dashboard">
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">訂單數量分析</button>
-        <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">書本銷量分類</button>
-        <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">消費總額排名</button>        
+        <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">應徵工讀數量分析</button>
+        <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">各處室目前職缺數量分析</button>
+        <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">各處室歷年職缺數量分析</button>        
       </div>      
     </nav>
   </div>
@@ -30,21 +31,20 @@
     </div>
     <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
       <center>
-        <div id="mainc" class="container-fluid" style="width: 1200px;height:500px"></div>
+        <div id="mainc" class="container-fluid" style="width: 600px;height:500px"></div>
       </center>
     </div>
   </div>
 </div>
 
 <script>
-  // 以長條圖與折線圖分析各月訂單
+  // 以長條圖分析各月訂單
   var chartDoma = document.getElementById('maina');
   var myCharta = echarts.init(chartDoma);
-  var data = {{revenue|tojson}};
-  var count = {{dataa|tojson}};
+  var data = {{dataa|tojson}};
   var optiona = {
     title: {
-      text: '各月訂單數量分析'
+      text: '各月應徵工讀數量分析'
     },
     tooltip: {},
     legend: {
@@ -55,15 +55,14 @@
     },
     yAxis: {},
     series: [{
-      name: '銷售總額',
+      name: '應徵總額',
       type: 'bar',
       // symbol: 'circle',
       symbolSize: 16,
       data: data,
       markPoint: {
         data: [
-          {type: 'max', name: '銷量最高月份'},
-          {type: 'min', name: '銷量最低月份'}
+          {type: 'max', name: '應徵最高月份'},
         ]
       },
       label: {
@@ -80,13 +79,13 @@
     },
   };
 
-  // 以圓餅圖分析書本銷量
+  // 以圓餅圖分析各處室歷年職缺數量分析
   var chartDomb = document.getElementById('mainb');
   var myChartb = echarts.init(chartDomb);
   var data = {{datab|tojson}};
   var optionb = {
     title: {
-      text: '各類商品銷量分析',
+      text: '各處室歷年職缺數量分析',
       left: 'center',
       top: 'center'
     },
@@ -94,91 +93,43 @@
     legend: {
       orient: 'vertical',
       x: 'left',
-      data: ['BOOK', 'CD', 'DVD']
+      data: ['學務處', '教務處', '管理學院']
     },
     series: [
       {
         type: 'pie',
         data: data,          
-        radius: ['40%', '70%']
+        radius: ['40%', '70%'],
       }
     ]
   };
 
-  // 使用動態長條圖查看消費總額最多的使用者
+  // 以圓餅圖分析各處室目前職缺數量分析
   var chartDomc = document.getElementById('mainc');
   var myChartc = echarts.init(chartDomc);
   var data = {{datac|tojson}};
-  var nameList = {{nameList|tojson}};
-  // var counter = {{counter|tojson}};
-  var countList = {{countList|tojson}};
   var optionc = {
     title: {
-      text: '使用者消費排名'
-    },
-    xAxis: {
-      max: 'dataMax'
-    },
-    yAxis: {
-      type: 'category',
-      data: nameList,
-      inverse: true,
-      animationDuration: 300,
-      animationDurationUpdate: 300,
-      max: 3
+      text: '各處室歷年職缺數量分析',
+      left: 'center',
+      top: 'center'
     },
     tooltip: {},
+    legend: {
+      orient: 'vertical',
+      x: 'left',
+      data: ['學務處', '教務處', '管理學院']
+    },
     series: [
       {
-        realtimeSort: true,
-        name: '消費總額',
-        type: 'bar',
-        data: data,
-        label: {
-          show: true,
-          position: 'right',
-          valueAnimation: true
-        }
-      },
-      {
-        realtimeSort: true,
-        name: '訂單總數',
-        type: 'bar',
-        data: countList,
-        label: {
-          show: true,
-          position: 'right',
-          valueAnimation: true
-        }
+        type: 'pie',
+        data: data,          
+        radius: ['40%', '70%'],
       }
-      ],
-    legend: {
-      show: true
-    },
-    animationDuration: 3000,
-    animationDurationUpdate: 3000,
-    animationEasing: 'linear',
-    animationEasingUpdate: 'linear'
+    ]
   };
 
-  function run() {
-    myChartc.setOption({
-      series: [
-        {
-          type: 'bar',
-          data
-        }
-      ]
-    });
-  }
-
-  setTimeout(function() {
-    run();
-  }, 0);
-        
-  setInterval(function() {
-    update();
-  }, 3000);
+  
 
   optiona && myCharta.setOption(optiona);
   optionb && myChartb.setOption(optionb);
