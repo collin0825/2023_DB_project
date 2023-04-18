@@ -140,26 +140,27 @@ def orderManager():
     if request.method == 'POST':
         pass
     else:
-        order_row = Order_List.get_order()
+        order_row = Apply_List.get_application()
         order_data = []
         for i in order_row:
             order = {
-                '訂單編號': i[0],
-                '訂購人': i[1],
-                '訂單總價': i[2],
-                '訂單時間': i[3]
+                '學號': i[0],
+                '姓名': i[1],
+                '應徵職缺': i[2]
             }
             order_data.append(order)
             
-        orderdetail_row = Order_List.get_orderdetail()
+        orderdetail_row = Apply_List.get_applydetail()
         order_detail = []
 
         for j in orderdetail_row:
             orderdetail = {
-                '訂單編號': j[0],
-                '商品名稱': j[1],
-                '商品單價': j[2],
-                '訂購數量': j[3]
+                '學號': j[0],
+                '姓名': j[1],
+                '職缺名稱': j[2],
+                '可工作時段': j[3],
+                '加分備註': j[4],
+                '應徵時間': j[5]
             }
             order_detail.append(orderdetail)
 

@@ -145,6 +145,15 @@ class Record():
         sql = 'SELECT SUM(TOTAL) FROM RECORD WHERE TNO = :id'
         return DB.fetchall(DB.execute_input( DB.prepare(sql), {'id':tno}))[0]
     
+class Apply_List():
+    def get_application():
+        sql = 'SELECT A.MID, M.NAME, V.VNAME, A.AID FROM APPLICATION A, APPLYRECORD R, MEMBER M, VACANCY V WHERE R.AID = A.AID AND A.MID = M.MID AND R.VID = V.VID GROUP BY V.VNAME, A.MID, M.NAME , A.AID ORDER BY V.VNAME DESC'
+        return DB.fetchall(DB.execute(DB.connect(), sql))
+    
+    def get_applydetail():
+        sql = 'SELECT O.OID, P.PNAME, R.SALEPRICE, R.AMOUNT FROM ORDER_LIST O, RECORD R, PRODUCT P WHERE O.TNO = R.TNO AND R.PID = P.PID'
+        return DB.fetchall(DB.execute(DB.connect(), sql))
+
 
 class Order_List():
     def add_order(input):
