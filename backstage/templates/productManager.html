@@ -51,10 +51,10 @@
             <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
           </svg>
         </span>
-        <input class="form-control me-2" id="keyword" placeholder="搜尋商品" aria-label="Search">
+        <input class="form-control me-2" id="keyword" placeholder="搜尋職缺" aria-label="Search">
     </div>
     <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-        新增商品
+        新增職缺
     </button>
 </div>
 
@@ -63,35 +63,48 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">新增商品</h5>
+                    <h5 class="modal-title" id="staticBackdropLabel">新增職缺</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="inputProductName" class="form-label">商品名稱</label>
-                        <input type="text" class="form-control" id="inputProductName" name="name" required>
+                        <label for="inputProductName" class="form-label">名稱(必填)</label>
+                        <input type="text" class="form-control" id="inputProductName" name="vName" required>
                     </div>
                     <div class="mb-3">
-                        <label for="inputUnitPrice" class="form-label">商品單價</label>
-                        <input type="number" class="form-control" id="inputUnitPrice" name="price" required>
+                        <label for="inputUnitPrice" class="form-label">內容(必填)</label>
+                        <input type="text" class="form-control" id="inputUnitPrice" name="content" required>
                     </div>
                     <div class="mb-3">
-                        <label for="inputProductCategory" class="form-label">商品種類</label>
-                        <select id="inputProductCategory" class="form-select" name="category" required>
-                            <option selected disabled value="">請選擇類型</option>
-                            <option value="BOOK">BOOK</option>
-                            <option value="CD">CD</option>
-                            <option value="DVD">DVD</option>
+                        <label for="inputUnitPrice" class="form-label">上班時間(必填)</label>
+                        <input type="text" class="form-control" id="inputUnitPrice" name="workTime" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputUnitPrice" class="form-label">技能需求</label>
+                        <input type="text" class="form-control" id="inputUnitPrice" name="skill">
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputUnitPrice" class="form-label">薪水(必填)</label>
+                        <input type="text" class="form-control" id="inputUnitPrice" name="salary" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputUnitPrice" class="form-label">人數(必填)</label>
+                        <input type="number" class="form-control" id="inputUnitPrice" name="people" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="office-list" class="form-label">處室(必填)</label>
+                        <select id="office-list" class="form-select" name="office" onchange="changeOffice(this.value)" required>
+                            <option selected disabled value="">請選擇處室</option>
+                            <option value='學務處'>學務處</option>
+                            <option value='管理學院'>管理學院</option>
+                            <option value='教務處'>教務處</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="inputProductDesc" class="form-label">商品敘述</label>
-                        <textarea class="form-control" id="inputProductDesc" name="description" required></textarea>
+                        <label for="unit-list" class="form-label">單位(必填)</label>
+                        <select id="unit-list" class="form-select" name="unit" required>
+                        </select>
                     </div>
-                    <!-- <div class="mb-3">
-                        <label for="inputProductImg" class="form-label">商品圖片</label><br/>
-                        <input type="file" name="file" id="file-uploader" data-target="file-uploader" required/>
-                    </div> -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">取消</button>
@@ -110,22 +123,40 @@
 <table id="manager" class="table table-bordered">
     <thead>
         <tr>
-            <th width="10%"><center>商品編號</center></th>
-            <th width="20%"><center>商品名稱</center></th>
-            <th width="15%"><center>商品單價</center></th>
-            <th width="15%"><center>商品類別</center></th>
-            <th colspan="2"><center>資料操作</center></th>
+            <th width="5%"><center>編號</center></th>
+            <th width="10%"><center>名稱</center></th>
+            <th width="10%"><center>內容</center></th>
+            <th width="10%"><center>上班時間</center></th>
+            <th width="10%"><center>技能需求</center></th>
+            <th width="10%"><center>薪水</center></th>
+            <th width="5%"><center>人數</center></th>
+            <th width="10%"><center>處室</center></th>
+            <th width="10%"><center>單位</center></th>
+            <th colspan="2"><center>職缺操作</center></th>
         </tr>
     </thead>
     <tbody id="product">
     {% for i in book_data %}
         <tr>
-            <td><center>{{ i.商品編號 }}</center></td>
-            <td><center>{{ i.商品名稱 }}</center></td>
-            <td><center>{{ i.商品售價 }}</center></td>
-            <td><center>{{ i.商品類別 }}</center></td>
-            <td><center><button type="submit" value="{{i.商品編號}}" name="edit" class="btn btn-success">編輯商品</button></center></td>
-            <td><center><button type="submit" value="{{i.商品編號}}" name="delete" onclick="return (confirm('你確定要刪除 \'{{ i.商品名稱 }}\' 嗎？'))" class="btn btn-danger">刪除商品</button></center></td>
+            <td><center>{{ i.職缺編號 }}</center></td>
+            <td><center>{{ i.職缺名稱 }}</center></td>
+            <td><center>{{ i.職缺內容 }}</center></td>
+            <td><center>{{ i.上班時間 }}</center></td>
+            {% if i.技能需求 == None %}
+            <td><center>無</center></td>
+            {% else %}
+            <td><center>{{i.技能需求}}</center></td>
+            {% endif %}
+            <td><center>{{ i.薪水 }}</center></td>
+            <td><center>{{ i.需求人數 }}</center></td>
+            <td><center>{{ i.office }}</center></td>
+            <td><center>{{ i.division }}</center></td>
+            <td><center><button type="submit" value="{{i.職缺編號}}" name="edit" class="btn btn-primary">編輯</button></center></td>
+            {% if i.status == 0 %}
+            <td><center><button type="submit" value="{{i.職缺編號}}" name="open" onclick="return (confirm('你確定要開啟 \'{{ i.職缺名稱 }}\' 嗎？'))" class="btn btn-success">開啟</button></center></td>
+            {% else %}
+            <td><center><button type="submit" value="{{i.職缺編號}}" name="close" onclick="return (confirm('你確定要關閉 \'{{ i.職缺名稱 }}\' 嗎？'))" class="btn btn-danger">關閉</button></center></td>
+            {% endif %}
         </tr>
     {% endfor %}
     </tbody>
@@ -137,6 +168,23 @@
 </div>
 
 <script>
+    let unit = {
+        '學務處': ['體育組'],
+        '管理學院': ['資管系'],
+        '教務處': ['招生組']
+    };
+    
+    function changeOffice(index){
+        console.log(index)
+        //跟剛剛一樣，製造一個字串，以html的語法填入系所的陣列
+        var Sinner="";
+        for(var i=0;i<unit[index].length;i++){
+            Sinner=Sinner+'<option value='+unit[index][i]+'>'+unit[index][i]+'</option>';
+        }
+        //抓到"sector-list"這select元素，修改其值
+        var unitSelect=document.getElementById("unit-list");
+        unitSelect.innerHTML=Sinner;
+    }
     function have_product(){
       alert('有使用者有使用到這筆資料，所以不能刪除');
     }
