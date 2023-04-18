@@ -157,12 +157,20 @@ class Record():
     
 class Apply_List():
     def get_application():
-        sql = 'SELECT A.MID, M.NAME, V.VNAME, A.AID FROM APPLICATION A, APPLYRECORD R, MEMBER M, VACANCY V WHERE R.AID = A.AID AND A.MID = M.MID AND R.VID = V.VID GROUP BY V.VNAME, A.MID, M.NAME , A.AID ORDER BY V.VNAME DESC'
+        sql = 'SELECT A.MID, M.NAME, V.VNAME, A.AID, R.STATUS FROM APPLICATION A, APPLYRECORD R, MEMBER M, VACANCY V WHERE R.AID = A.AID AND A.MID = M.MID AND R.VID = V.VID GROUP BY V.VNAME, A.MID, M.NAME , A.AID, R.STATUS ORDER BY V.VNAME DESC'
         return DB.fetchall(DB.execute(DB.connect(), sql))
     
     def get_applydetail():
-        sql = 'SELECT O.OID, P.PNAME, R.SALEPRICE, R.AMOUNT FROM ORDER_LIST O, RECORD R, PRODUCT P WHERE O.TNO = R.TNO AND R.PID = P.PID'
+        sql = 'SELECT A.MID, M.DEPT, M.GRADE, M.NAME, V.VNAME, A.AVAILABLETIME, A.BONUS, R.TIME, A.AID FROM APPLICATION A, APPLYRECORD R, MEMBER M, VACANCY V WHERE R.AID = A.AID AND A.MID = M.MID AND R.VID = V.VID'
         return DB.fetchall(DB.execute(DB.connect(), sql))
+    
+    def update_status(aid, status):
+        if status == 'meet':
+            sql = 'UPDATE APPLYRECORD SET STATUS=1 WHERE AID=:aid'
+        else:
+            sql = 'UPDATE APPLYRECORD SET STATUS=2 WHERE AID=:aid'
+        DB.execute_input(DB.prepare(sql), {'aid': aid})
+        DB.commit()
 
 
 class Order_List():

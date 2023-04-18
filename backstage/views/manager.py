@@ -166,31 +166,48 @@ def show_info():
 @manager.route('/orderManager', methods=['GET', 'POST'])
 @login_required
 def orderManager():
-    if request.method == 'POST':
-        pass
-    else:
-        order_row = Apply_List.get_application()
-        order_data = []
-        for i in order_row:
-            order = {
-                '學號': i[0],
-                '姓名': i[1],
-                '應徵職缺': i[2]
-            }
-            order_data.append(order)
-            
-        orderdetail_row = Apply_List.get_applydetail()
-        order_detail = []
+    if request.method == 'GET':
+        if(current_user.role == 'user'):
+            flash('No permission')
+            return redirect(url_for('index'))
 
-        for j in orderdetail_row:
-            orderdetail = {
-                '學號': j[0],
-                '姓名': j[1],
-                '職缺名稱': j[2],
-                '可工作時段': j[3],
-                '加分備註': j[4],
-                '應徵時間': j[5]
-            }
-            order_detail.append(orderdetail)
+    if 'meet' in request.values:
+        aid = request.values.get('meet')
+        status = 'meet'
+        Apply_List.update_status(aid, status)      
+
+    elif 'offer' in request.values:
+        aid = request.values.get('offer')
+        status = 'offer'
+        Apply_List.update_status(aid, status)   
+    
+    order_row = Apply_List.get_application()
+    order_data = []
+    for i in order_row:
+        order = {
+            '學號': i[0],
+            '姓名': i[1],
+            '應徵職缺': i[2],
+            '應徵編號': i[3],
+            '審核狀態': i[4]
+        }
+        order_data.append(order)
+        
+    orderdetail_row = Apply_List.get_applydetail()
+    order_detail = []
+
+    for j in orderdetail_row:
+        orderdetail = {
+            '學號': j[0],
+            '系所':j[1],
+            '年級':j[2],
+            '姓名': j[3],
+            '職缺名稱': j[4],
+            '可工作時段': j[5],
+            '加分備註': j[6],
+            '應徵時間': j[7],
+            '應徵編號':j[8]
+        }
+        order_detail.append(orderdetail)
 
     return render_template('orderManager.html', orderData = order_data, orderDetail = order_detail, user=current_user.name)
