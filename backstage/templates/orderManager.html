@@ -21,8 +21,8 @@
 
 
 {% for i in orderData %}
-<div class="modal fade" id="staticBackdrop{{i.學號}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade bd-example-modal-lg" id="staticBackdrop{{i.應徵編號}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">詳細申請資料</h5>
@@ -32,25 +32,32 @@
                 <div class="mb-3">
                     <table class="table table-bordered">
                         <tr>
-                            <th><center>商品名稱</center></th>
-                            <th><center>商品單價</center></th>
-                            <th><center>訂購數量</center></th>
+                            <th><center>學號</center></th>
+                            <th><center>系所</center></th>
+                            <th><center>年級</center></th>
+                            <th><center>姓名</center></th>
+                            <th><center>職缺名稱</center></th>
+                            <th><center>可工作時段</center></th>
+                            <th><center>加分備註</center></th>
+                            <th><center>應徵時間</center></th>
                         </tr>
                             
                         {% for j in orderDetail %}
-                        {% if j.訂單編號 == i.訂單編號 %}
+                        {% if j.應徵編號 == i.應徵編號 %}
                         <tr>
-                            <td> <center>{{ j.商品名稱 }}</center></td>
-                            <td> <center>{{ j.商品單價 }}</center></td>
-                            <td> <center>{{ j.訂購數量 }}</center></td>
+                            <td> <center>{{ j.學號 }}</center></td>
+                            <td> <center>{{ j.系所 }}</center></td>
+                            <td> <center>{{ j.年級 }}</center></td>
+                            <td> <center>{{ j.姓名 }}</center></td>
+                            <td> <center>{{ j.職缺名稱 }}</center></td>
+                            <td> <center>{{ j.可工作時段 }}</center></td>
+                            <td> <center>{{ j.加分備註 }}</center></td>
+                            <td> <center>{{ j.應徵時間 }}</center></td>
                         </tr>
                         {% endif %}
                         {% endfor %}
                     </table>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal" style="width:30%;">回訂單</button>
             </div>
         </div>
     </div>
@@ -72,45 +79,51 @@
 <br/>
 
 <div class="container-xxl">
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th width="15%"><center>學號</center></th>
-            <th width="15%"><center>姓名</center></th>
-            <th width="15%"><center>應徵職缺</center></th>
-            <th width="25%"><center>申請資料</center></th>
-            <th colspan="3"><center>審核狀態</center></th>
-        </tr>
-    </thead>
-    <tbody id="orderlist">
-    {% for i in orderData %}
-        <tr>
-            <td><center>{{ i.學號 }}</center></td>
-            <td><center>{{ i.姓名 }}</center></td>
-            <td><center>{{ i.應徵職缺 }}</center></td>
-            <td><center>
-                <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{i.學號}}">
-                    查看申請資料
-                </button>
-            </center></td>
-            <td><center>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{i.學號}}">
-                    通知面試
-                </button>
-            </center></td>
-            <td><center>
-                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{i.學號}}">
-                    確定錄取
-                </button>
-            </center></td>
-            <td><center>
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{i.學號}}">
-                    致感謝信
-                </button>
-            </center></td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+  <form method="post" action={{ url_for('manager.orderManager') }} >
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th width="15%"><center>學號</center></th>
+                <th width="15%"><center>姓名</center></th>
+                <th width="15%"><center>應徵職缺</center></th>
+                <th width="25%"><center>申請資料</center></th>
+                <th><center>審核狀態</center></th>
+            </tr>
+        </thead>
+        <tbody id="orderlist">
+        {% for i in orderData %}
+            <tr>
+                <td><center>{{ i.學號 }}</center></td>
+                <td><center>{{ i.姓名 }}</center></td>
+                <td><center>{{ i.應徵職缺 }}</center></td>
+                <td><center>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{i.應徵編號}}">
+                        查看申請資料
+                    </button>
+                </center></td>
+                {% if i.審核狀態 == 0 %}
+                    <td><center>
+                        <button type="submit" value="{{i.應徵編號}}" name="meet" onclick="return (confirm('你確定要通知 \'{{ i.姓名 }}\' 前來面試嗎？'))" class="btn btn-danger">
+                            通知面試
+                        </button>
+                    </center></td>
+                {% elif i.審核狀態 == 1 %}
+                    <td><center>
+                        <button type="submit" value="{{i.應徵編號}}" name="offer" onclick="return (confirm('你確定要通知 \'{{ i.姓名 }}\' 錄取 \'{{ i.應徵職缺 }}\' 嗎？'))" class="btn btn-success">
+                            確定錄取
+                        </button>
+                    </center></td>
+                {% else %}
+                    <td><center>
+                        <button  class="btn" type="button" disabled>
+                            已錄取
+                        </button>
+                    </center></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+  </form>
 </div>
 {% endblock content %}
