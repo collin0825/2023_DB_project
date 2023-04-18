@@ -74,16 +74,16 @@ class Cart():
         DB.execute_input( DB.prepare(sql), {'id': user_id})
         DB.commit()
        
-class Product():
+class Vacancy():
     def count():
         sql = 'SELECT COUNT(*) FROM PRODUCT'
         return DB.fetchone(DB.execute( DB.connect(), sql))
     
-    def get_product(vid):
+    def get_vacancy(vid):
         sql ='SELECT * FROM VACANCY NATURAL JOIN DEPARTMENT WHERE VID = :id'
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': vid}))
 
-    def get_all_product():
+    def get_all_vacancy():
         sql = 'SELECT * FROM VACANCY NATURAL JOIN DEPARTMENT'
         return DB.fetchall(DB.execute( DB.connect(), sql))
     
@@ -102,7 +102,7 @@ class Product():
         DB.execute_input(DB.prepare(sql), {'id': pid})
         DB.commit()
 
-    def update_product(input):
+    def update_vacancy(input):
         input['required'] = int(input['required'])
         sql = 'UPDATE VACANCY SET WORKTIME=:workTime, VNAME=:vName, CONTENT=:content, SALARY=:salary, REQUIRED=:required, SKILL=:skill WHERE VID=:vid'
         DB.execute_input(DB.prepare(sql), input)
@@ -143,7 +143,7 @@ class Record():
         sql = 'SELECT AMOUNT FROM RECORD WHERE TNO = :id and PID=:pid'
         return DB.fetchone( DB.execute_input( DB.prepare(sql) , {'id': tno, 'pid':pid}) )[0]
     
-    def update_product(input):
+    def update_vacancy(input):
         sql = 'UPDATE RECORD SET AMOUNT=:amount, TOTAL=:total WHERE PID=:pid and TNO=:tno'
         DB.execute_input(DB.prepare(sql), input)
 
