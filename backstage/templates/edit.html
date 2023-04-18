@@ -15,54 +15,50 @@
   <form method="post" enctype=multipart/form-data action={{ url_for('manager.edit') }}>
     <table class="table table-bordered">
       <tr>
-        <th>商品編號</th>
-        <td><input class="form-control" type="text" value="{{ data.商品編號 }}" name="pid" readonly class="id_input"></td>
+        <th>編號</th>
+        <td><input class="form-control" type="text" value="{{ data.職缺編號 }}" name="vid" readonly class="id_input"></td>
       </tr>
       <tr>
-        <th>商品名稱</th>
-        <td><input class="form-control" type="text" value="{{ data.商品名稱 }}" name="name" required></td>
+        <th>名稱(必填)</th>
+        <td><input class="form-control" type="text" value="{{ data.職缺名稱 }}" name="vName" required></td>
       </tr>
       <tr>
-        <th>單價</th>
-        <td><input class="form-control" type="text" value="{{ data.單價 }}" name="price" required></td>
+        <th>內容(必填)</th>
+        <td><input class="form-control" type="text" value="{{ data.職缺內容 }}" name="content" required></td>
       </tr>
       <tr>
-        <th>類別</th>
-        <td>
-          <select class="form-control" name="category">
-            {% if data.類別 == 'CD' %}
-              <option value="BOOK">BOOK</option>
-              <option value="DVD">DVD</option>
-              <option value="CD" selected>CD</option>
-            {% elif data.類別 == 'DVD' %}
-              <option value="BOOK">BOOK</option>
-              <option value="DVD" selected>DVD</option>
-              <option value="CD">CD</option>
-            {% else %}
-              <option value="BOOK" selected>BOOK</option>
-              <option value="DVD">DVD</option>
-              <option value="CD">CD</option>
-            {% endif %}
-            
-        </select>
+        <th>上班時間(必填)</th>
+        <td><input class="form-control" type="text" value="{{ data.上班時間 }}" name="workTime" required></td>
       </tr>
       <tr>
-        <th>商品敘述</th>
-        <td>
-          <textarea class="form-control" name="description">{{ data.商品敘述 }}</textarea>
-        </td>
+        <th>技能需求</th>
+        {% if data.技能需求 == None %}
+        <td><input class="form-control" type="text" value="無" name="required"></td>
+        {% else %}
+        <td><input class="form-control" type="text" value="{{ data.技能需求 }}" name="skill"></td>
+        {% endif %}
       </tr>
-      <!-- <tr>
-        <th>商品圖片</th>
-        <td>
-          <input type="file" name="file" id="file-uploader" data-target="file-uploader"/>
-        </td>
-      </tr> -->
+      <tr>
+        <th>薪水(必填)</th>
+        <td><input class="form-control" type="text" value="{{ data.薪水 }}" name="salary" required></td>
+      </tr>
+      <tr>
+        <th>人數(必填)</th>
+        <td><input class="form-control" type="text" value="{{ data.需求人數 }}" name="people" required></td>
+      </tr>
+      <tr>
+        <th>處室</th>
+        <td><input class="form-control" type="text" value="{{ data.office }}" name="office" readonly></td>
+      </tr>
+      <tr>
+        <th>單位</th>
+        <td><input class="form-control" type="text" value="{{ data.division }}" name="location" readonly></td>
+      </tr>
     </table>
     <center>
       <div class="option">
         <button class="btn btn-outline-success" type="submit">確定修改</button> 
-        <a href="{{ url_for('manager.productManager') }}"><button class="btn btn-outline-danger">回商品管理</button></a>
+        <a href="{{ url_for('manager.productManager') }}"><button class="btn btn-outline-danger">回職缺管理</button></a>
       </div>
     </center>
 

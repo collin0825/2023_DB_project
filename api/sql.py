@@ -80,19 +80,19 @@ class Product():
         return DB.fetchone(DB.execute( DB.connect(), sql))
     
     def get_product(vid):
-        sql ='SELECT * FROM VACANCY WHERE VID = :id'
+        sql ='SELECT * FROM VACANCY NATURAL JOIN DEPARTMENT WHERE VID = :id'
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': vid}))
 
     def get_all_product():
-        sql = 'SELECT * FROM VACANCY'
+        sql = 'SELECT * FROM VACANCY NATURAL JOIN DEPARTMENT'
         return DB.fetchall(DB.execute( DB.connect(), sql))
     
     def get_name(pid):
         sql = 'SELECT PNAME FROM PRODUCT WHERE PID = :id'
         return DB.fetchone(DB.execute_input( DB.prepare(sql), {'id':pid}))[0]
 
-    def add_product(input):
-        sql = 'INSERT INTO PRODUCT VALUES (:pid, :name, :price, :category, :description)'
+    def add_vacancy(input):
+        sql = 'INSERT INTO VACANCY VALUES (:vid, :workTime, :vName, :content, :salary, :skill, :required, :status, :did)'
 
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
@@ -103,10 +103,20 @@ class Product():
         DB.commit()
 
     def update_product(input):
-        sql = 'UPDATE PRODUCT SET PNAME=:name, PRICE=:price, CATEGORY=:category, PDESC=:description WHERE PID=:pid'
+        input['required'] = int(input['required'])
+        sql = 'UPDATE VACANCY SET WORKTIME=:workTime, VNAME=:vName, CONTENT=:content, SALARY=:salary, REQUIRED=:required, SKILL=:skill WHERE VID=:vid'
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
-    
+    def update_status(vid, status):
+        if status == 'open':
+            sql = 'UPDATE VACANCY SET STATUS=1 WHERE VID=:vid'
+        else:
+            sql = 'UPDATE VACANCY SET STATUS=0 WHERE VID=:vid'
+        DB.execute_input(DB.prepare(sql), {'vid': vid})
+        DB.commit()
+    def get_dept(office, unit):
+        sql = 'SELECT DID FROM DEPARTMENT WHERE OFFICE = :office AND DIVISION = :unit'
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'office': office, 'unit': unit}))
 class Record():
     def get_total_money(tno):
         sql = 'SELECT SUM(TOTAL) FROM RECORD WHERE TNO=:tno'

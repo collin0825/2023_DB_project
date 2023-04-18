@@ -29,19 +29,19 @@ def productManager():
             flash('No permission')
             return redirect(url_for('index'))
         
-    if 'delete' in request.values:
-        pid = request.values.get('delete')
-        data = Record.delete_check(pid)
+    if 'open' in request.values:
+        vid = request.values.get('open')
+        status = 'open'
+        Product.update_status(vid, status)
+
+    elif 'close' in request.values:
+        vid = request.values.get('close')
+        status = 'close'
+        Product.update_status(vid, status)
         
-        if(data != None):
-            flash('failed')
-        else:
-            data = Product.get_product(pid)
-            Product.delete_product(pid)
-    
     elif 'edit' in request.values:
-        pid = request.values.get('edit')
-        return redirect(url_for('manager.edit', pid=pid))
+        vid = request.values.get('edit')
+        return redirect(url_for('manager.edit', vid=vid))
     
     book_data = book()
     return render_template('productManager.html', book_data = book_data, user=current_user.name)
@@ -51,10 +51,17 @@ def book():
     book_data = []
     for i in book_row:
         book = {
-            '商品編號': i[0],
-            '商品名稱': i[1],
-            '商品售價': i[2],
-            '商品類別': i[3]
+            '職缺編號': i[1],
+            '職缺名稱': i[3],
+            '職缺內容': i[4],
+            '上班時間': i[2],
+            '技能需求': i[6],
+            '薪水': i[5],
+            '需求人數': i[7],
+            'status': i[8],
+            'office': i[9],
+            'division': i[10],
+            
         }
         book_data.append(book)
     return book_data
@@ -65,24 +72,35 @@ def add():
         data = ""
         while(data != None):
             number = str(random.randrange( 10000, 99999))
-            en = random.choice(string.ascii_letters)
-            pid = en + number
-            data = Product.get_product(pid)
+            en = 'v'
+            vid = en + number
+            data = Product.get_product(vid)
 
-        name = request.values.get('name')
-        price = request.values.get('price')
-        category = request.values.get('category')
-        description = request.values.get('description')
+        vName = request.values.get('vName')
+        content = request.values.get('content')
+        workTime = request.values.get('workTime')
+        skill = request.values.get('skill')
+        salary = request.values.get('salary')
+        people = request.values.get('people')
+        office = request.values.get('office')
+        unit = request.values.get('unit')
 
-        if (len(name) < 1 or len(price) < 1):
+        if (len(vName) < 1 or len(content) < 1):
             return redirect(url_for('manager.productManager'))
         
-        Product.add_product(
-            {'pid' : pid,
-             'name' : name,
-             'price' : price,
-             'category' : category,
-             'description':description
+        dept = Product.get_dept(office, unit)
+        did = dept[0]
+        
+        Product.add_vacancy(
+            {'vid' : vid,
+             'workTime' : workTime,
+             'vName' : vName,
+             'content' : content,
+             'salary':salary,
+             'skill': skill,
+             'required': people,
+             'status': 1,
+             'did': did
             }
         )
 
@@ -101,11 +119,13 @@ def edit():
     if request.method == 'POST':
         Product.update_product(
             {
-            'name' : request.values.get('name'),
-            'price' : request.values.get('price'),
-            'category' : request.values.get('category'), 
-            'description' : request.values.get('description'),
-            'pid' : request.values.get('pid')
+            'vid' : request.values.get('vid'),
+            'vName' : request.values.get('vName'),
+            'content' : request.values.get('content'), 
+            'workTime' : request.values.get('workTime'),
+            'skill' : request.values.get('skill'),
+            'salary' : request.values.get('salary'),
+            'required' : request.values.get('people')
             }
         )
         
@@ -117,19 +137,28 @@ def edit():
 
 
 def show_info():
-    pid = request.args['pid']
-    data = Product.get_product(pid)
-    pname = data[1]
-    price = data[2]
-    category = data[3]
-    description = data[4]
+    vid = request.args['vid']
+    data = Product.get_product(vid)
+    vid = data[1]
+    vname = data[3]
+    content = data[4]
+    workTime = data[2]
+    skill = data[6]
+    salary = data[5]
+    required = data[7]
+    office = data[9]
+    division = data[10]
 
     product = {
-        '商品編號': pid,
-        '商品名稱': pname,
-        '單價': price,
-        '類別': category,
-        '商品敘述': description
+        '職缺編號': vid,
+        '職缺名稱': vname,
+        '職缺內容': content,
+        '上班時間': workTime,
+        '技能需求': skill,
+        '薪水': salary,
+        '需求人數': required,
+        'office': office,
+        'division': division
     }
     return product
 
