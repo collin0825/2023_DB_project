@@ -32,12 +32,12 @@ def productManager():
     if 'open' in request.values:
         vid = request.values.get('open')
         status = 'open'
-        Product.update_status(vid, status)
+        Vacancy.update_status(vid, status)
 
     elif 'close' in request.values:
         vid = request.values.get('close')
         status = 'close'
-        Product.update_status(vid, status)
+        Vacancy.update_status(vid, status)
         
     elif 'edit' in request.values:
         vid = request.values.get('edit')
@@ -47,7 +47,7 @@ def productManager():
     return render_template('productManager.html', book_data = book_data, user=current_user.name)
 
 def book():
-    book_row = Product.get_all_product()
+    book_row = Vacancy.get_all_vacancy()
     book_data = []
     for i in book_row:
         book = {
@@ -74,7 +74,7 @@ def add():
             number = str(random.randrange( 10000, 99999))
             en = 'v'
             vid = en + number
-            data = Product.get_product(vid)
+            data = Vacancy.get_vacancy(vid)
 
         vName = request.values.get('vName')
         content = request.values.get('content')
@@ -88,10 +88,10 @@ def add():
         if (len(vName) < 1 or len(content) < 1):
             return redirect(url_for('manager.productManager'))
         
-        dept = Product.get_dept(office, unit)
+        dept = Vacancy.get_dept(office, unit)
         did = dept[0]
         
-        Product.add_vacancy(
+        Vacancy.add_vacancy(
             {'vid' : vid,
              'workTime' : workTime,
              'vName' : vName,
@@ -117,7 +117,7 @@ def edit():
             return redirect(url_for('bookstore'))
 
     if request.method == 'POST':
-        Product.update_product(
+        Vacancy.update_vacancy(
             {
             'vid' : request.values.get('vid'),
             'vName' : request.values.get('vName'),
@@ -138,7 +138,7 @@ def edit():
 
 def show_info():
     vid = request.args['vid']
-    data = Product.get_product(vid)
+    data = Vacancy.get_vacancy(vid)
     vid = data[1]
     vname = data[3]
     content = data[4]

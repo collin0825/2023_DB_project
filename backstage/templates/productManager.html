@@ -3,7 +3,7 @@
 {{ super() }}
 {% endblock head %}
 
-{% block title %} 商品管理 {% endblock title %}
+{% block title %} 職缺管理 {% endblock title %}
 
 {% block content %}
 
@@ -98,6 +98,7 @@
                             <option value='學務處'>學務處</option>
                             <option value='管理學院'>管理學院</option>
                             <option value='教務處'>教務處</option>
+                            <option value='總務處'>總務處</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -169,9 +170,10 @@
 
 <script>
     let unit = {
-        '學務處': ['體育組'],
-        '管理學院': ['資管系'],
-        '教務處': ['招生組']
+        '學務處': ['體育組', '衛生組'],
+        '管理學院': ['資管系', '企管系'],
+        '教務處': ['招生組', '課務組'],
+        '總務處': ['出納組', '事務組']
     };
     
     function changeOffice(index){

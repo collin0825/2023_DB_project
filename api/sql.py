@@ -74,16 +74,16 @@ class Cart():
         DB.execute_input( DB.prepare(sql), {'id': user_id})
         DB.commit()
        
-class Product():
+class Vacancy():
     def count():
         sql = 'SELECT COUNT(*) FROM PRODUCT'
         return DB.fetchone(DB.execute( DB.connect(), sql))
     
-    def get_product(vid):
+    def get_vacancy(vid):
         sql ='SELECT * FROM VACANCY NATURAL JOIN DEPARTMENT WHERE VID = :id'
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': vid}))
 
-    def get_all_product():
+    def get_all_vacancy():
         sql = 'SELECT * FROM VACANCY NATURAL JOIN DEPARTMENT'
         return DB.fetchall(DB.execute( DB.connect(), sql))
     
@@ -102,7 +102,7 @@ class Product():
         DB.execute_input(DB.prepare(sql), {'id': pid})
         DB.commit()
 
-    def update_product(input):
+    def update_vacancy(input):
         input['required'] = int(input['required'])
         sql = 'UPDATE VACANCY SET WORKTIME=:workTime, VNAME=:vName, CONTENT=:content, SALARY=:salary, REQUIRED=:required, SKILL=:skill WHERE VID=:vid'
         DB.execute_input(DB.prepare(sql), input)
@@ -143,7 +143,7 @@ class Record():
         sql = 'SELECT AMOUNT FROM RECORD WHERE TNO = :id and PID=:pid'
         return DB.fetchone( DB.execute_input( DB.prepare(sql) , {'id': tno, 'pid':pid}) )[0]
     
-    def update_product(input):
+    def update_vacancy(input):
         sql = 'UPDATE RECORD SET AMOUNT=:amount, TOTAL=:total WHERE PID=:pid and TNO=:tno'
         DB.execute_input(DB.prepare(sql), input)
 
@@ -189,22 +189,14 @@ class Order_List():
 
 
 class Analysis():
-    def month_price(i):
-        sql = 'SELECT EXTRACT(MONTH FROM ORDERTIME), SUM(PRICE) FROM ORDER_LIST WHERE EXTRACT(MONTH FROM ORDERTIME)=:mon GROUP BY EXTRACT(MONTH FROM ORDERTIME)'
+    def month_apply(i):
+        sql = 'SELECT EXTRACT(MONTH FROM TIME), COUNT(*) FROM APPLYRECORD WHERE EXTRACT(MONTH FROM TIME)=:mon GROUP BY EXTRACT(MONTH FROM TIME)'
         return DB.fetchall( DB.execute_input( DB.prepare(sql) , {"mon": i}))
-
-    def month_count(i):
-        sql = 'SELECT EXTRACT(MONTH FROM ORDERTIME), COUNT(OID) FROM ORDER_LIST WHERE EXTRACT(MONTH FROM ORDERTIME)=:mon GROUP BY EXTRACT(MONTH FROM ORDERTIME)'
-        return DB.fetchall( DB.execute_input( DB.prepare(sql), {"mon": i}))
     
-    def category_sale():
-        sql = 'SELECT SUM(TOTAL), CATEGORY FROM(SELECT * FROM PRODUCT,RECORD WHERE PRODUCT.PID = RECORD.PID) GROUP BY CATEGORY'
+    def category_vacancy():
+        sql = 'SELECT COUNT(*), OFFICE FROM VACANCY NATURAL JOIN DEPARTMENT WHERE STATUS=1 GROUP BY OFFICE'
         return DB.fetchall( DB.execute( DB.connect(), sql))
-
-    def member_sale():
-        sql = 'SELECT SUM(PRICE), MEMBER.MID, MEMBER.NAME FROM ORDER_LIST, MEMBER WHERE ORDER_LIST.MID = MEMBER.MID AND MEMBER.IDENTITY = :identity GROUP BY MEMBER.MID, MEMBER.NAME ORDER BY SUM(PRICE) DESC'
-        return DB.fetchall( DB.execute_input( DB.prepare(sql), {'identity':'user'}))
-
-    def member_sale_count():
-        sql = 'SELECT COUNT(*), MEMBER.MID, MEMBER.NAME FROM ORDER_LIST, MEMBER WHERE ORDER_LIST.MID = MEMBER.MID AND MEMBER.IDENTITY = :identity GROUP BY MEMBER.MID, MEMBER.NAME ORDER BY COUNT(*) DESC'
-        return DB.fetchall( DB.execute_input( DB.prepare(sql), {'identity':'user'}))
+    
+    def category_vacancy_all():
+        sql = 'SELECT COUNT(*), OFFICE FROM VACANCY NATURAL JOIN DEPARTMENT GROUP BY OFFICE'
+        return DB.fetchall( DB.execute( DB.connect(), sql))
