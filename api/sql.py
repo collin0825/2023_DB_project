@@ -29,16 +29,16 @@ class DB():
         connection.commit()
 
 class Member():
-    def get_member(account):
-        sql = "SELECT ACCOUNT, PASSWORD, MID, IDENTITY, NAME FROM MEMBER WHERE ACCOUNT = :id"
-        return DB.fetchall(DB.execute_input(DB.prepare(sql), {'id' : account}))
+    def get_member(mid):
+        sql = "SELECT MID, NAME, PASSWORD, IDENTITY, NAME FROM MEMBER WHERE MID = :mid"
+        return DB.fetchall(DB.execute_input(DB.prepare(sql), {'mid' : mid}))
     
     def get_all_account():
-        sql = "SELECT ACCOUNT FROM MEMBER"
+        sql = "SELECT MID FROM MEMBER"
         return DB.fetchall(DB.execute(DB.connect(), sql))
 
     def create_member(input):
-        sql = 'INSERT INTO MEMBER VALUES (null, :name, :account, :password, :identity)'
+        sql = 'INSERT INTO MEMBER VALUES (:mid, :name, :password, :identity)'
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
     
@@ -74,25 +74,25 @@ class Cart():
         DB.execute_input( DB.prepare(sql), {'id': user_id})
         DB.commit()
        
-class Product():
+class Vacancy():
     def count():
         sql = 'SELECT COUNT(*) FROM PRODUCT'
         return DB.fetchone(DB.execute( DB.connect(), sql))
     
-    def get_product(pid):
-        sql ='SELECT * FROM PRODUCT WHERE PID = :id'
-        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': pid}))
+    def get_vacancy(vid):
+        sql ='SELECT * FROM VACANCY NATURAL JOIN DEPARTMENT WHERE VID = :id'
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': vid}))
 
-    def get_all_product():
-        sql = 'SELECT * FROM PRODUCT'
+    def get_all_vacancy():
+        sql = 'SELECT * FROM VACANCY NATURAL JOIN DEPARTMENT'
         return DB.fetchall(DB.execute( DB.connect(), sql))
     
     def get_name(pid):
         sql = 'SELECT PNAME FROM PRODUCT WHERE PID = :id'
         return DB.fetchone(DB.execute_input( DB.prepare(sql), {'id':pid}))[0]
 
-    def add_product(input):
-        sql = 'INSERT INTO PRODUCT VALUES (:pid, :name, :price, :category, :description)'
+    def add_vacancy(input):
+        sql = 'INSERT INTO VACANCY VALUES (:vid, :workTime, :vName, :content, :salary, :skill, :required, :status, :did)'
 
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
@@ -102,11 +102,21 @@ class Product():
         DB.execute_input(DB.prepare(sql), {'id': pid})
         DB.commit()
 
-    def update_product(input):
-        sql = 'UPDATE PRODUCT SET PNAME=:name, PRICE=:price, CATEGORY=:category, PDESC=:description WHERE PID=:pid'
+    def update_vacancy(input):
+        input['required'] = int(input['required'])
+        sql = 'UPDATE VACANCY SET WORKTIME=:workTime, VNAME=:vName, CONTENT=:content, SALARY=:salary, REQUIRED=:required, SKILL=:skill WHERE VID=:vid'
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
-    
+    def update_status(vid, status):
+        if status == 'open':
+            sql = 'UPDATE VACANCY SET STATUS=1 WHERE VID=:vid'
+        else:
+            sql = 'UPDATE VACANCY SET STATUS=0 WHERE VID=:vid'
+        DB.execute_input(DB.prepare(sql), {'vid': vid})
+        DB.commit()
+    def get_dept(office, unit):
+        sql = 'SELECT DID FROM DEPARTMENT WHERE OFFICE = :office AND DIVISION = :unit'
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'office': office, 'unit': unit}))
 class Record():
     def get_total_money(tno):
         sql = 'SELECT SUM(TOTAL) FROM RECORD WHERE TNO=:tno'
@@ -133,7 +143,7 @@ class Record():
         sql = 'SELECT AMOUNT FROM RECORD WHERE TNO = :id and PID=:pid'
         return DB.fetchone( DB.execute_input( DB.prepare(sql) , {'id': tno, 'pid':pid}) )[0]
     
-    def update_product(input):
+    def update_vacancy(input):
         sql = 'UPDATE RECORD SET AMOUNT=:amount, TOTAL=:total WHERE PID=:pid and TNO=:tno'
         DB.execute_input(DB.prepare(sql), input)
 
@@ -145,6 +155,23 @@ class Record():
         sql = 'SELECT SUM(TOTAL) FROM RECORD WHERE TNO = :id'
         return DB.fetchall(DB.execute_input( DB.prepare(sql), {'id':tno}))[0]
     
+class Apply_List():
+    def get_application():
+        sql = 'SELECT A.MID, M.NAME, V.VNAME, A.AID, R.STATUS FROM APPLICATION A, APPLYRECORD R, MEMBER M, VACANCY V WHERE R.AID = A.AID AND A.MID = M.MID AND R.VID = V.VID GROUP BY V.VNAME, A.MID, M.NAME , A.AID, R.STATUS ORDER BY V.VNAME DESC'
+        return DB.fetchall(DB.execute(DB.connect(), sql))
+    
+    def get_applydetail():
+        sql = 'SELECT A.MID, M.DEPT, M.GRADE, M.NAME, V.VNAME, A.AVAILABLETIME, A.BONUS, R.TIME, A.AID FROM APPLICATION A, APPLYRECORD R, MEMBER M, VACANCY V WHERE R.AID = A.AID AND A.MID = M.MID AND R.VID = V.VID'
+        return DB.fetchall(DB.execute(DB.connect(), sql))
+    
+    def update_status(aid, status):
+        if status == 'meet':
+            sql = 'UPDATE APPLYRECORD SET STATUS=1 WHERE AID=:aid'
+        else:
+            sql = 'UPDATE APPLYRECORD SET STATUS=2 WHERE AID=:aid'
+        DB.execute_input(DB.prepare(sql), {'aid': aid})
+        DB.commit()
+
 
 class Order_List():
     def add_order(input):
@@ -162,22 +189,14 @@ class Order_List():
 
 
 class Analysis():
-    def month_price(i):
-        sql = 'SELECT EXTRACT(MONTH FROM ORDERTIME), SUM(PRICE) FROM ORDER_LIST WHERE EXTRACT(MONTH FROM ORDERTIME)=:mon GROUP BY EXTRACT(MONTH FROM ORDERTIME)'
+    def month_apply(i):
+        sql = 'SELECT EXTRACT(MONTH FROM TIME), COUNT(*) FROM APPLYRECORD WHERE EXTRACT(MONTH FROM TIME)=:mon GROUP BY EXTRACT(MONTH FROM TIME)'
         return DB.fetchall( DB.execute_input( DB.prepare(sql) , {"mon": i}))
-
-    def month_count(i):
-        sql = 'SELECT EXTRACT(MONTH FROM ORDERTIME), COUNT(OID) FROM ORDER_LIST WHERE EXTRACT(MONTH FROM ORDERTIME)=:mon GROUP BY EXTRACT(MONTH FROM ORDERTIME)'
-        return DB.fetchall( DB.execute_input( DB.prepare(sql), {"mon": i}))
     
-    def category_sale():
-        sql = 'SELECT SUM(TOTAL), CATEGORY FROM(SELECT * FROM PRODUCT,RECORD WHERE PRODUCT.PID = RECORD.PID) GROUP BY CATEGORY'
+    def category_vacancy():
+        sql = 'SELECT COUNT(*), OFFICE FROM VACANCY NATURAL JOIN DEPARTMENT WHERE STATUS=1 GROUP BY OFFICE'
         return DB.fetchall( DB.execute( DB.connect(), sql))
-
-    def member_sale():
-        sql = 'SELECT SUM(PRICE), MEMBER.MID, MEMBER.NAME FROM ORDER_LIST, MEMBER WHERE ORDER_LIST.MID = MEMBER.MID AND MEMBER.IDENTITY = :identity GROUP BY MEMBER.MID, MEMBER.NAME ORDER BY SUM(PRICE) DESC'
-        return DB.fetchall( DB.execute_input( DB.prepare(sql), {'identity':'user'}))
-
-    def member_sale_count():
-        sql = 'SELECT COUNT(*), MEMBER.MID, MEMBER.NAME FROM ORDER_LIST, MEMBER WHERE ORDER_LIST.MID = MEMBER.MID AND MEMBER.IDENTITY = :identity GROUP BY MEMBER.MID, MEMBER.NAME ORDER BY COUNT(*) DESC'
-        return DB.fetchall( DB.execute_input( DB.prepare(sql), {'identity':'user'}))
+    
+    def category_vacancy_all():
+        sql = 'SELECT COUNT(*), OFFICE FROM VACANCY NATURAL JOIN DEPARTMENT GROUP BY OFFICE'
+        return DB.fetchall( DB.execute( DB.connect(), sql))

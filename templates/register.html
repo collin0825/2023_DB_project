@@ -17,7 +17,7 @@
             </p>
     
             <p class="mb-3">
-                帳號：<input type="text" name="account" required/>
+                教職員編號/學號：<input type="text" name="mid" required/>
                 {% with messages = get_flashed_messages() %}
                 {% if messages %}
                 <p class="same_accoount">
@@ -33,8 +33,8 @@
             <div class="btn_div mb-4" style="margin-bottom: 1rem;">
                 <p class="option_div">選擇你要註冊的身份：</p>
                 <select name="identity">
-                    <option value="user" selected>使用者</option>
-                    <option value="manager" >管理員</option>
+                    <option value="user" selected>學生</option>
+                    <option value="manager">管理者</option>
                 </select>
             </div>
     

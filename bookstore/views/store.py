@@ -11,14 +11,14 @@ from sqlalchemy import null
 from link import *
 import math
 from base64 import b64encode
-from api.sql import Member, Order_List, Product, Record, Cart
+from api.sql import Member, Order_List, Vacancy, Record, Cart
 
 store = Blueprint('bookstore', __name__, template_folder='../templates')
 
 @store.route('/', methods=['GET', 'POST'])
 @login_required
 def bookstore():
-    result = Product.count()
+    result = Vacancy.count()
     count = math.ceil(result[0]/9)
     flag = 0
     
@@ -35,18 +35,18 @@ def bookstore():
         end = page * 9
         search = request.values.get('keyword')
         keyword = search
-        
-        cursor.prepare('SELECT * FROM PRODUCT WHERE PNAME LIKE :search')
+        cursor.prepare('SELECT * FROM VACANCY WHERE VNAME LIKE :search')
         cursor.execute(None, {'search': '%' + keyword + '%'})
         book_row = cursor.fetchall()
+        
         book_data = []
         final_data = []
         
         for i in book_row:
             book = {
-                '商品編號': i[0],
-                '商品名稱': i[1],
-                '商品價格': i[2]
+                '職缺編號': i[0],
+                '職缺名稱': i[2],
+                '職缺內容': i[3]
             }
             book_data.append(book)
             total = total + 1
@@ -65,9 +65,9 @@ def bookstore():
     
     elif 'pid' in request.args:
         pid = request.args['pid']
-        data = Product.get_product(pid)
+        data = Vacancy.get_vacancy(pid)
         
-        pname = data[1]
+        vname = data[2]
         price = data[2]
         category = data[3]
         description = data[4]
@@ -89,15 +89,15 @@ def bookstore():
         start = (page - 1) * 9
         end = page * 9
         
-        book_row = Product.get_all_product()
+        book_row = Vacancy.get_all_vacancy()
         book_data = []
         final_data = []
         
         for i in book_row:
             book = {
-                '商品編號': i[0],
-                '商品名稱': i[1],
-                '商品價格': i[2]
+                '職缺編號': i[0],
+                '職缺名稱': i[2],
+                '職缺內容': i[3]
             }
             book_data.append(book)
             
@@ -114,7 +114,7 @@ def bookstore():
         single = 1
         search = request.values.get('keyword')
         keyword = search
-        cursor.prepare('SELECT * FROM PRODUCT WHERE PNAME LIKE :search')
+        cursor.prepare('SELECT * FROM VACANCY WHERE VNAME LIKE :search')
         cursor.execute(None, {'search': '%' + keyword + '%'})
         book_row = cursor.fetchall()
         book_data = []
@@ -122,9 +122,9 @@ def bookstore():
         
         for i in book_row:
             book = {
-                '商品編號': i[0],
-                '商品名稱': i[1],
-                '商品價格': i[2]
+                '職缺編號': i[0],
+                '職缺名稱': i[2],
+                '職缺內容': i[3]
             }
 
             book_data.append(book)
@@ -138,14 +138,14 @@ def bookstore():
         return render_template('bookstore.html', keyword=search, single=single, book_data=book_data, user=current_user.name, page=1, flag=flag, count=count)    
     
     else:
-        book_row = Product.get_all_product()
+        book_row = Vacancy.get_all_vacancy()
         book_data = []
         temp = 0
         for i in book_row:
             book = {
-                '商品編號': i[0],
-                '商品名稱': i[1],
-                '商品價格': i[2],
+                '職缺編號': i[0],
+                '職缺名稱': i[2],
+                '職缺內容': i[3]
             }
             if len(book_data) < 9:
                 book_data.append(book)
@@ -179,7 +179,7 @@ def cart():
             # 檢查購物車裡面有沒有商品
             product = Record.check_product(pid, tno)
             # 取得商品價錢
-            price = Product.get_product(pid)[2]
+            price = Vacancy.get_vacancy(pid)[2]
 
             # 如果購物車裡面沒有的話 把他加一個進去
             if(product == None):
@@ -188,7 +188,7 @@ def cart():
                 # 假如購物車裡面有的話，就多加一個進去
                 amount = Record.get_amount(tno, pid)
                 total = (amount+1)*int(price)
-                Record.update_product({'amount':amount+1, 'tno':tno , 'pid':pid, 'total':total})
+                Record.update_vacancy({'amount':amount+1, 'tno':tno , 'pid':pid, 'total':total})
 
         elif "delete" in request.form :
             pid = request.values.get('delete')
@@ -232,7 +232,7 @@ def order():
     product_data = []
 
     for i in product_row:
-        pname = Product.get_name(i[1])
+        pname = Vacancy.get_name(i[1])
         product = {
             '商品編號': i[1],
             '商品名稱': pname,
@@ -287,7 +287,7 @@ def change_order():
         
         # i[0]：交易編號 / i[1]：商品編號 / i[2]：數量 / i[3]：價格
         if int(request.form[i[1]]) != i[2]:
-            Record.update_product({
+            Record.update_vacancy({
                 'amount':request.form[i[1]],
                 'pid':i[1],
                 'tno':tno,
@@ -312,7 +312,7 @@ def only_cart():
 
     for i in product_row:
         pid = i[1]
-        pname = Product.get_name(i[1])
+        pname = Vacancy.get_name(i[1])
         price = i[3]
         amount = i[2]
         
