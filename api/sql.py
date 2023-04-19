@@ -38,7 +38,7 @@ class Member():
         return DB.fetchall(DB.execute(DB.connect(), sql))
 
     def create_member(input):
-        sql = 'INSERT INTO MEMBER VALUES (:mid, :name, :password, :identity)'
+        sql = 'INSERT INTO MEMBER VALUES (:mid, :name, :password, :identity, null, null, null, null, null, null, null)'
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
     
