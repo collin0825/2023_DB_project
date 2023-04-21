@@ -103,6 +103,10 @@ class Vacancy():
         sql = 'SELECT * FROM VACANCY NATURAL JOIN DEPARTMENT'
         return DB.fetchall(DB.execute( DB.connect(), sql))
     
+    def get_open_vacancy():
+        sql = 'SELECT * FROM VACANCY NATURAL JOIN DEPARTMENT WHERE STATUS = 1'
+        return DB.fetchall(DB.execute( DB.connect(), sql))
+    
     def get_name(pid):
         sql = 'SELECT PNAME FROM PRODUCT WHERE PID = :id'
         return DB.fetchone(DB.execute_input( DB.prepare(sql), {'id':pid}))[0]

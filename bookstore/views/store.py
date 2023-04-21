@@ -53,7 +53,7 @@ def bookstore():
         end = page * 9
         search = request.values.get('keyword')
         keyword = search
-        cursor.prepare('SELECT * FROM VACANCY WHERE VNAME LIKE :search')
+        cursor.prepare('SELECT * FROM VACANCY WHERE VNAME LIKE :search AND STATUS = 1')
         cursor.execute(None, {'search': '%' + keyword + '%'})
         book_row = cursor.fetchall()
         
@@ -124,7 +124,7 @@ def bookstore():
         start = (page - 1) * 9
         end = page * 9
         
-        book_row = Vacancy.get_all_vacancy()
+        book_row = Vacancy.get_open_vacancy()
         book_data = []
         final_data = []
         
@@ -149,7 +149,7 @@ def bookstore():
         single = 1
         search = request.values.get('keyword')
         keyword = search
-        cursor.prepare('SELECT * FROM VACANCY WHERE VNAME LIKE :search')
+        cursor.prepare('SELECT * FROM VACANCY WHERE VNAME LIKE :search AND STATUS = 1')
         cursor.execute(None, {'search': '%' + keyword + '%'})
         book_row = cursor.fetchall()
         book_data = []
@@ -173,7 +173,7 @@ def bookstore():
         return render_template('bookstore.html', keyword=search, single=single, book_data=book_data, user=current_user.name, page=1, flag=flag, count=count)    
     
     else:
-        book_row = Vacancy.get_all_vacancy()
+        book_row = Vacancy.get_open_vacancy()
         book_data = []
         temp = 0
         for i in book_row:
