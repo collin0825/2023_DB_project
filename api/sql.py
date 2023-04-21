@@ -1,5 +1,6 @@
 from typing import Optional
 from link import *
+import datetime
 
 class DB():
     def connect():
@@ -33,22 +34,31 @@ class Member():
         sql = "SELECT MID, NAME, PASSWORD, IDENTITY, NAME FROM MEMBER WHERE MID = :mid"
         return DB.fetchall(DB.execute_input(DB.prepare(sql), {'mid' : mid}))
     
+    def get_profile(mid):
+        sql = "SELECT * FROM MEMBER WHERE MID = :mid"
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'mid' : mid}))
+    
     def get_all_account():
         sql = "SELECT MID FROM MEMBER"
         return DB.fetchall(DB.execute(DB.connect(), sql))
+    
+    def update_profile(input):
+        sql = "UPDATE MEMBER SET PID=:pid, BIRTH=:birth, PHONE=:phone, GENDER=:gender, DEPT=:dept, GRADE=:grade, EMAIL=:email WHERE MID=:mid"
+        DB.execute_input(DB.prepare(sql), input)
+        DB.commit()
 
     def create_member(input):
-        sql = 'INSERT INTO MEMBER VALUES (:mid, :name, :password, :identity)'
+        sql = 'INSERT INTO MEMBER VALUES (:mid, :name, :password, :identity, null, null, null, null, null, null, null)'
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
     
-    def delete_product(tno, pid):
-        sql = 'DELETE FROM RECORD WHERE TNO=:tno and PID=:pid '
-        DB.execute_input(DB.prepare(sql), {'tno': tno, 'pid':pid})
+    def delete_product(mid, vid):
+        sql = 'DELETE FROM SAVERECORD WHERE VID=:vid AND MID=:mid'
+        DB.execute_input(DB.prepare(sql), {'mid': mid, 'vid':vid})
         DB.commit()
         
     def get_order(userid):
-        sql = 'SELECT * FROM ORDER_LIST WHERE MID = :id ORDER BY ORDERTIME DESC'
+        sql = 'SELECT * FROM APPLICATION NATURAL JOIN APPLYRECORD WHERE MID = :id ORDER BY AID'
         return DB.fetchall(DB.execute_input( DB.prepare(sql), {'id':userid}))
     
     def get_role(userid):
@@ -57,16 +67,22 @@ class Member():
 
 class Cart():
     def check(user_id):
-        sql = 'SELECT * FROM CART, RECORD WHERE CART.MID = :id AND CART.TNO = RECORD.TNO'
+        sql = 'SELECT * FROM SAVERECORD WHERE SAVERECORD.MID = :id'
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': user_id}))
         
     def get_cart(user_id):
-        sql = 'SELECT * FROM CART WHERE MID = :id'
-        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': user_id}))
+        sql = 'SELECT * FROM SAVERECORD WHERE MID = :id'
+        return DB.fetchall(DB.execute_input(DB.prepare(sql), {'id': user_id}))
 
-    def add_cart(user_id, time):
-        sql = 'INSERT INTO CART VALUES (:id, :time, cart_tno_seq.nextval)'
+    def add_saveInterest(user_id, time):
+        sql = 'INSERT INTO INTEREST VALUES (:id, :time)' #, cart_tno_seq.nextval
         DB.execute_input( DB.prepare(sql), {'id': user_id, 'time':time})
+        DB.commit()
+
+    def add_saveRecord(user_id, time, vid):
+        sql = 'INSERT INTO SAVERECORD VALUES (:id, :time, :vid)' #, cart_tno_seq.nextval
+        # DB.setinputsizes(time=oracledb.TIMESTAMP)
+        DB.execute_input( DB.prepare(sql), {'id': user_id, 'time':time, 'vid': vid})
         DB.commit()
 
     def clear_cart(user_id):
@@ -76,7 +92,7 @@ class Cart():
        
 class Vacancy():
     def count():
-        sql = 'SELECT COUNT(*) FROM PRODUCT'
+        sql = 'SELECT COUNT(*) FROM VACANCY'
         return DB.fetchone(DB.execute( DB.connect(), sql))
     
     def get_vacancy(vid):
@@ -122,9 +138,13 @@ class Record():
         sql = 'SELECT SUM(TOTAL) FROM RECORD WHERE TNO=:tno'
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {'tno': tno}))[0]
 
-    def check_product(pid, tno):
-        sql = 'SELECT * FROM RECORD WHERE PID = :id and TNO = :tno'
-        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': pid, 'tno':tno}))
+    def check_product(pid):
+        sql = 'SELECT * FROM SAVERECORD WHERE PID = :id'
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': pid}))
+    
+    def check_saveRecord(pid, mid):
+        sql = 'SELECT * FROM SAVERECORD WHERE VID = :id AND MID = :mid'
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': pid, 'mid': mid}))
 
     def get_price(pid):
         sql = 'SELECT PRICE FROM PRODUCT WHERE PID = :id'
@@ -170,6 +190,20 @@ class Apply_List():
         else:
             sql = 'UPDATE APPLYRECORD SET STATUS=2 WHERE AID=:aid'
         DB.execute_input(DB.prepare(sql), {'aid': aid})
+        DB.commit()
+
+    def get_aid():
+        sql = 'SELECT * FROM APPLICATION'
+        return DB.fetchall(DB.execute(DB.connect(), sql))
+
+    def insert_application(input):
+        sql = 'INSERT INTO APPLICATION VALUES (:aid, :avaTime, :bonus, :mid)'
+        DB.execute_input(DB.prepare(sql), input)
+        DB.commit()
+
+    def insert_applyrecord(input):
+        sql = 'INSERT INTO APPLYRECORD VALUES (:aid, :vid, :time, :status)'
+        DB.execute_input(DB.prepare(sql), input)
         DB.commit()
 
 

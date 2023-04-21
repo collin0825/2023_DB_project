@@ -4,14 +4,14 @@ from flask import Flask, request, template_rendered, Blueprint
 from flask import url_for, redirect, flash
 from flask import render_template
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
-from datetime import datetime
+import datetime
 from numpy import identity, product
 import random, string
 from sqlalchemy import null
 from link import *
 import math
 from base64 import b64encode
-from api.sql import Member, Order_List, Vacancy, Record, Cart
+from api.sql import Member, Order_List, Vacancy, Record, Cart, Apply_List
 
 store = Blueprint('bookstore', __name__, template_folder='../templates')
 
@@ -26,6 +26,24 @@ def bookstore():
         if(current_user.role == 'manager'):
             flash('No permission')
             return redirect(url_for('manager.home'))
+        
+    if request.method == 'POST':
+        birthdate = request.values.get('birth')
+
+        input = {
+            'mid' : current_user.id,
+            'pid' : request.values.get('pid'),
+            'birth' : datetime.date(int(birthdate[:4]), int(birthdate[5:7]), int(birthdate[8:10])),
+            'phone' : request.values.get('phone'),
+            'gender' : request.values.get('gender'),
+            'dept' : request.values.get('dept'),
+            'grade' : request.values.get('grade'),
+            'email' : request.values.get('email')
+        }
+        
+        Member.update_profile(input)
+        
+        return redirect(url_for('bookstore.bookstore'))
 
     if 'keyword' in request.args and 'page' in request.args:
         total = 0
@@ -46,7 +64,7 @@ def bookstore():
             book = {
                 '職缺編號': i[0],
                 '職缺名稱': i[2],
-                '職缺內容': i[3]
+                '職缺內容': i[4]
             }
             book_data.append(book)
             total = total + 1
@@ -64,22 +82,39 @@ def bookstore():
 
     
     elif 'pid' in request.args:
-        pid = request.args['pid']
-        data = Vacancy.get_vacancy(pid)
+        vid = request.args['pid']
+        data = Vacancy.get_vacancy(vid)
         
-        vname = data[2]
-        price = data[2]
-        category = data[3]
+        vname = data[3]
+        price = data[5]
+        worktime = data[2]
         description = data[4]
-        image = 'sdg.jpg'
+        requiredNum = data[7]
+        image = 'logo.jpg'
+        dep = data[9] + '-' + data[10]
+
+        worktimelist = []
+        worktimeStr = ''
         
+        worktime = worktime.split(';')
+        for w in worktime:
+            worktimelist.append('星期' + w[0] + w[1] + '午')
+
+        for i in range(0, len(worktimelist)):
+            if (i == 0):
+                worktimeStr = worktimeStr + worktimelist[i]
+            else:
+                worktimeStr = worktimeStr + '/' + worktimelist[i]
+
         product = {
-            '商品編號': pid,
-            '商品名稱': pname,
+            '工讀編號': vid,
+            '工讀名稱': vname,
             '單價': price,
-            '類別': category,
-            '商品敘述': description,
-            '商品圖片': image
+            '工作時間': worktimeStr,
+            '職缺敘述': description,
+            '欲招人數':requiredNum,
+            '商品圖片': image,
+            '應聘單位': dep
         }
 
         return render_template('product.html', data = product, user=current_user.name)
@@ -95,9 +130,9 @@ def bookstore():
         
         for i in book_row:
             book = {
-                '職缺編號': i[0],
-                '職缺名稱': i[2],
-                '職缺內容': i[3]
+                '職缺編號': i[1],
+                '職缺名稱': i[3],
+                '職缺內容': i[5]
             }
             book_data.append(book)
             
@@ -124,7 +159,7 @@ def bookstore():
             book = {
                 '職缺編號': i[0],
                 '職缺名稱': i[2],
-                '職缺內容': i[3]
+                '職缺內容': i[4]
             }
 
             book_data.append(book)
@@ -143,16 +178,16 @@ def bookstore():
         temp = 0
         for i in book_row:
             book = {
-                '職缺編號': i[0],
-                '職缺名稱': i[2],
-                '職缺內容': i[3]
+                '職缺編號': i[1],
+                '職缺名稱': i[3],
+                '職缺內容': i[5]
             }
             if len(book_data) < 9:
                 book_data.append(book)
         
         return render_template('bookstore.html', book_data=book_data, user=current_user.name, page=1, flag=flag, count=count)
 
-# 會員購物車
+# 我感興趣
 @store.route('/cart', methods=['GET', 'POST'])
 @login_required # 使用者登入後才可以看
 def cart():
@@ -167,34 +202,22 @@ def cart():
     if request.method == 'POST':
         
         if "pid" in request.form :
-            data = Cart.get_cart(current_user.id)
-            
-            if( data == None): #假如購物車裡面沒有他的資料
-                time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                Cart.add_cart(current_user.id, time) # 幫他加一台購物車
-                data = Cart.get_cart(current_user.id) 
-                
-            tno = data[2] # 取得交易編號
-            pid = request.values.get('pid') # 使用者想要購買的東西
-            # 檢查購物車裡面有沒有商品
-            product = Record.check_product(pid, tno)
-            # 取得商品價錢
-            price = Vacancy.get_vacancy(pid)[2]
+            vid = request.values.get('pid') # 使用者想要購買的東西
 
-            # 如果購物車裡面沒有的話 把他加一個進去
+            # 檢查save record裡有沒有mid和vid
+            product = Record.check_saveRecord(vid, current_user.id)
+            
             if(product == None):
-                Record.add_product( {'id': tno, 'tno':pid, 'price':price, 'total':price} )
-            else:
-                # 假如購物車裡面有的話，就多加一個進去
-                amount = Record.get_amount(tno, pid)
-                total = (amount+1)*int(price)
-                Record.update_vacancy({'amount':amount+1, 'tno':tno , 'pid':pid, 'total':total})
+                time = datetime.datetime.now()
+                print(time)
+                Cart.add_saveInterest(current_user.id, time) # 加入interest
+                Cart.add_saveRecord(current_user.id, time, vid)
 
         elif "delete" in request.form :
-            pid = request.values.get('delete')
-            tno = Cart.get_cart(current_user.id)[2]
-            
-            Member.delete_product(tno, pid)
+            vid = request.values.get('delete')
+            mid = current_user.id
+
+            Member.delete_product(mid, vid)
             product_data = only_cart()
         
         elif "user_edit" in request.form:
@@ -210,7 +233,7 @@ def cart():
             total = Record.get_total_money(tno)
             Cart.clear_cart(current_user.id)
 
-            time = str(datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
+            time = str(datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
             format = 'yyyy/mm/dd hh24:mi:ss'
             Order_List.add_order( {'mid': current_user.id, 'time':time, 'total':total, 'format':format, 'tno':tno} )
 
@@ -253,30 +276,27 @@ def orderlist():
     user_id = current_user.id
 
     data = Member.get_order(user_id)
+
     orderlist = []
+    status = ''
 
     for i in data:
+        if(i[6] == 0):
+            status = '未審核'
+        elif(i[6] == 1):
+            status = '審核中'
+        elif(i[6] == 2):
+            status = '已錄取'
+
         temp = {
-            '訂單編號': i[0],
-            '訂單總價': i[3],
-            '訂單時間': i[2]
+            '應徵編號': i[0],
+            '應徵時間': str(i[5])[:10],
+            '應徵狀態': status,
+            '職缺編號': i[4]
         }
         orderlist.append(temp)
-    
-    orderdetail_row = Order_List.get_orderdetail()
-    orderdetail = []
 
-    for j in orderdetail_row:
-        temp = {
-            '訂單編號': j[0],
-            '商品名稱': j[1],
-            '商品單價': j[2],
-            '訂購數量': j[3]
-        }
-        orderdetail.append(temp)
-
-
-    return render_template('orderlist.html', data=orderlist, detail=orderdetail, user=current_user.name)
+    return render_template('orderlist.html', data=orderlist, user=current_user.name)
 
 def change_order():
     data = Cart.get_cart(current_user.id)
@@ -306,22 +326,93 @@ def only_cart():
         return 0
     
     data = Cart.get_cart(current_user.id)
-    tno = data[2]
-    product_row = Record.get_record(tno)
+    print(data)
+
+    vlist = []
+    for i in data:
+        vlist.append(Vacancy.get_vacancy(i[2]))
+
+    print('=====================================')
+    print(vlist)
+
     product_data = []
 
-    for i in product_row:
-        pid = i[1]
-        pname = Vacancy.get_name(i[1])
-        price = i[3]
-        amount = i[2]
+    for i in vlist:
+        vid = i[1]
+        print(vid)
+        vname = i[3]
+        print(vname)
+        salary = i[5]
+        print(salary)
+        required = i[7]
+        print(required)
+        status = ''
+        dep = i[9] + '-' + i[10]
+        print(dep)
+
+        if(i[8] == 0):
+            status = '已招滿'
+        elif(i[8] == 1):
+            status = '應徵中'
         
         product = {
-            '商品編號': pid,
-            '商品名稱': pname,
-            '商品價格': price,
-            '數量': amount
+            '職缺編號': vid,
+            '職缺名稱': vname,
+            '薪資': salary,
+            '欲招人數': required,
+            '職缺狀態': status,
+            '工讀單位': dep
         }
         product_data.append(product)
+    print('=====================================')
+    print(product_data)
     
     return product_data
+
+@store.route('/profile')
+def profile():
+    mid = current_user.id
+    data = list(Member.get_profile(mid))
+
+    # 檢查profile是否填寫完整，0代表完整
+    check = 0
+
+    return render_template('profile.html', data=data, user=current_user.name, check=check)#, data=orderlist, user=current_user.name)
+
+@store.route('/checking', methods=['POST'] )
+def checking():
+    mid = current_user.id
+    profile = Member.get_profile(mid)
+    data = list(profile)
+
+    # 檢查profile是否填寫完整，0代表完整
+    for i in profile:
+        if (i == None):
+            check = 1
+            return render_template('profile.html', data=data, user=current_user.name, check=check)
+
+    current_app_list = Apply_List.get_aid()
+    max_aid = 0
+    for i in current_app_list:
+        if(max_aid < int(i[0][1:])):
+            max_aid = int(i[0][1:])
+
+    # 寫入APPLICATION
+    input = {
+        'aid' : 'a'+ str(max_aid+1),
+        'avaTime' : request.values.get('avaTime'),
+        'bonus' : request.values.get('bonus'),
+        'mid' : mid
+    }
+    Apply_List.insert_application(input)
+
+    input2 = {
+        'aid' : 'a'+ str(max_aid+1),
+        'vid' : request.values.get('vid'),
+        'time' : datetime.datetime.now(),
+        'status' : 0
+    }
+    Apply_List.insert_applyrecord(input2)
+
+
+    return redirect('/bookstore/orderlist')

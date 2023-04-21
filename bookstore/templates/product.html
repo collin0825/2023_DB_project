@@ -14,29 +14,55 @@
 <div class="card" style="width: 20rem;margin-left:5%">
   <img src={{ url_for('static', filename = temp  ) }} class="card-img-top">
   <div class="card-body">
-    <h5 class="card-title">{{ data.商品名稱 }}</h5>
+    <h5 class="card-title">{{ data.工讀名稱 }}</h5>
     <p class="card-text"></p>
   </div>
   <ul class="list-group list-group-flush">
-    <li class="list-group-item"><b>商品類別</b>&nbsp;&nbsp;{{ data.類別 }}</li>
-    <li class="list-group-item"><b>商品單價</b>&nbsp;&nbsp;{{ data.單價 }}</li>
+    <li class="list-group-item"><b>工讀時間</b>&nbsp;&nbsp;{{ data.工作時間 }}</li>
+    <li class="list-group-item"><b>欲招人數</b>&nbsp;&nbsp;{{ data.欲招人數 }}</li>
+    <li class="list-group-item"><b>工讀時薪</b>&nbsp;&nbsp;{{ data.單價 }}</li>
+    <li class="list-group-item"><b>應聘單位</b>&nbsp;&nbsp;{{ data.應聘單位 }}</li>
   </ul>
-  <div class="card-body">
-    <a href="{{ url_for('bookstore.bookstore') }}" class="btn btn-outline-primary">回商品列表</a>
-  </div>
+  <form method="post" action={{ url_for('bookstore.cart') }}>
+    <div class="card-body">
+      <a href="{{ url_for('bookstore.bookstore') }}" class="btn btn-outline-primary">回職缺導覽</a>
+      <button class="btn btn-outline-success" type="submit" value="{{data.工讀編號}}" name="pid">加入我感興趣</button>
+    </div>
+  </form>
 </div>
 
 
 <div class="col-sm-6">
-  <form method="post" action={{ url_for('bookstore.cart') }}>
-<div class="card" style="margin-top:10%">
-  <h5 class="card-header">商品介紹</h5>
+  <form method="post" action={{ url_for('bookstore.checking', vid=data.工讀編號) }}>
+<div class="card">
+  <h5 class="card-header">職缺介紹</h5>
   <div class="card-body">
     <p class="card-text">
-      {{data.商品敘述}}
+      {{data.職缺敘述}}
     </p>
-    <button class="btn btn-outline-success" type="submit" value="{{data.商品編號}}" name="pid">加入購物車</a>
   </div>
+</div>
+<div class="card">
+  <h5 class="card-header">填寫求職資訊</h5>
+  <div class="card-body">
+    <p class="card-text">
+      <li class="list-group-item"><b>可工讀時段（ex: 一上;三下）</b>
+        <input class="form-control" value='一上;三下' name="avaTime">
+        <br>
+      </li> 
+      <li class="list-group-item"><b>加分備註</b>
+        <textarea class="form-control" name="bonus" cols="40" rows="5"></textarea>
+        <br>
+      </li> 
+    </p>
+    <!-- <a href="{{ url_for('bookstore.checking', vid=data.工讀編號) }}" class="btn btn-outline-danger">我要應徵工讀</a> -->
+    <right>
+      <button class="btn btn-outline-danger" type="submit">我要應徵工讀</button> 
+    </right>
+    <!-- <a href="{{ url_for('bookstore.orderlist', pid=data.職缺編號) }}" class="btn btn-outline-danger">我要應徵工讀</a> -->
+    
+  </div>
+  
 </div>
 </form>
 </div>

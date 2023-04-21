@@ -1,0 +1,78 @@
+{% extends "frontstage.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+
+{% block title %}BookStore{% endblock title%}
+
+{% block content %}
+<script>
+  function checking(check){
+    if(check == 1){
+      return alert('請填寫個人檔案！')
+    }
+    return 
+  }
+  window.onload = checking('{{ check }}');
+</script>
+
+<br/>
+
+
+<div class="col-sm-6" style="margin-left: auto ;margin-right: auto ;width: 30%; display: block" >
+<form method="post" action={{ url_for('bookstore.bookstore') }}>
+<div class="card">
+  <h5 class="card-header">個人簡介</h5>
+  <div class="card-body">
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item"><b>身分證字號</b>
+          <input class="form-control" value="{{ data[4] }}" name="pid">
+          <br>
+        </li>    
+        
+        <li class="list-group-item"><b>出生年月日</b>
+            <input class="form-control" type="date" value="{{ data[5] }}" name="birth">
+            <br>
+          </li>
+          <li class="list-group-item"><b>聯絡電話</b>
+            <input class="form-control" onkeyup="value=value.replace(/[^\d]/g,'')" value="{{ data[6] }}" name="phone">
+            <br>
+          </li>
+          <li class="list-group-item"><b>生理性別</b>
+            <!-- <input class="form-control" value="{{ data[7] }}" name="{{ data[7] }}" list="gender"> -->
+              <select name="gender" id="gender" class="list-group-item">
+                <option value="">請輸入性別</option>
+                <option value="男">生理男</option>
+                <option value="女">生理女</option>
+              </select>
+            <!-- </input> -->
+              
+            <br>
+          </li>
+          <li class="list-group-item"><b>就讀系所</b>
+            <input class="form-control" value="{{ data[8] }}" name="dept">
+            <br>
+          </li>
+          <li class="list-group-item"><b>就讀年級</b>
+            <input class="form-control" type="number" onkeyup="value=value.replace(/[^\d]/g,'')" min="1" value="{{ data[9] }}" name="grade">
+            <br>
+          </li>
+          <li class="list-group-item"><b>電子郵件</b>
+          <input class="form-control" value="{{ data[10] }}" name="email">
+          <br>
+        </li>
+    </ul>
+    <center>
+        <button class="btn btn-outline-success" type="submit">確定修改</button> 
+    </center>
+    <!-- <a href="{{ url_for('bookstore.orderlist', pid=data.職缺編號) }}" class="btn btn-outline-danger">我要應徵工讀</a> -->
+  </div>
+</div>
+</form>
+</div>
+
+
+</div>
+
+{% endblock content%}
+
