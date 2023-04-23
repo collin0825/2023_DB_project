@@ -3,7 +3,7 @@
 {{ super() }}
 {% endblock head %}
 
-{% block title %}BookStore{% endblock title%}
+{% block title %}個人資訊{% endblock title%}
 
 {% block content %}
 <script>
@@ -40,8 +40,8 @@
           </li>
           <li class="list-group-item"><b>生理性別</b>
             <!-- <input class="form-control" value="{{ data[7] }}" name="{{ data[7] }}" list="gender"> -->
-              <select name="gender" id="gender" class="list-group-item">
-                <option value="">請輸入性別</option>
+              <select name="gender" id="gender" class="list-group-item" value="{{ data[7] }}">
+                <!-- <option value="">請輸入性別</option> -->
                 <option value="男">生理男</option>
                 <option value="女">生理女</option>
               </select>

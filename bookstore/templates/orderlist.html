@@ -3,9 +3,57 @@
 {{ super() }}
 {% endblock head %}
 
-{% block title %}BookStore{% endblock title%}
+{% block title %}應徵紀錄{% endblock title%}
 
 {% block content %}
+<script>
+  function checking(check_applied){
+    if(check_applied == 1){
+      return alert('您已應徵過此職缺！')
+    }
+    return 
+  } 
+  window.onload = checking('{{ check_applied }}');
+</script>
+
+{% for i in data %}
+<div class="modal fade bd-example-modal-lg" id="staticBackdrop{{i.職缺編號}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">詳細申請資料</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th><center>職缺名稱</center></th>
+                            <th><center>工讀薪資</center></th>
+                            <th><center>可工作時段</center></th>
+                            <th><center>加分備註</center></th>
+                            <th><center>職缺狀態</center></th>
+                        </tr>
+                            
+                        {% for j in data %}
+                        {% if j.應徵編號 == i.應徵編號 %}
+                        <tr>
+                            <td> <center>{{ j.職缺名稱 }}</center></td>
+                            <td> <center>{{ j.薪資 }}</center></td>
+                            <td> <center>{{ j.可工作時段 }}</center></td>
+                            <td> <center>{{ j.加分備註 }}</center></td>
+                            <td> <center>{{ j.職缺狀態 }}</center></td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
 
 <br/>
 <div class="container-xl">
@@ -24,10 +72,13 @@
         <td> <center>{{ i.應徵狀態 }}</center></td>
         <td width="20%">
           <center>
-            <a href="{{ url_for('bookstore.bookstore', pid=i.職缺編號) }}" class="btn btn-outline-success">職缺資訊</a>
+            <!-- <a href="{{ url_for('bookstore.bookstore', pid=i.職缺編號) }}" class="btn btn-outline-success">職缺資訊</a> -->
             <!-- <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{i.訂單編號}}">
               查看職缺細項
             </button> -->
+            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{i.職缺編號}}">
+              查看申請資料
+            </button>
           </center>
         </td>
       </tr>

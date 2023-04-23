@@ -272,6 +272,10 @@ def order():
 def orderlist():
     if "oid" in request.args :
         pass
+
+    check_applied = 0
+    if "check_applied" in request.args:
+        check_applied = 1
     
     user_id = current_user.id
 
@@ -279,6 +283,7 @@ def orderlist():
 
     orderlist = []
     status = ''
+    v_status = ''
 
     for i in data:
         if(i[6] == 0):
@@ -287,16 +292,28 @@ def orderlist():
             status = '審核中'
         elif(i[6] == 2):
             status = '已錄取'
+        
+        vacancy = Vacancy.get_vacancy(i[4])
+
+        if(vacancy[8] == 0):
+            v_status = '已招滿'
+        elif(vacancy[8] == 1):
+            v_status = '招募中'
 
         temp = {
             '應徵編號': i[0],
             '應徵時間': str(i[5])[:10],
             '應徵狀態': status,
-            '職缺編號': i[4]
+            '職缺編號': i[4],
+            '可工作時段': i[1],
+            '加分備註': i[2],
+            '職缺名稱': vacancy[3],
+            '薪資': vacancy[5],
+            '職缺狀態': v_status
         }
         orderlist.append(temp)
 
-    return render_template('orderlist.html', data=orderlist, user=current_user.name)
+    return render_template('orderlist.html', data=orderlist, user=current_user.name, check_applied=check_applied)
 
 def change_order():
     data = Cart.get_cart(current_user.id)
@@ -373,6 +390,7 @@ def only_cart():
 def profile():
     mid = current_user.id
     data = list(Member.get_profile(mid))
+    
 
     # 檢查profile是否填寫完整，0代表完整
     check = 0
@@ -384,6 +402,7 @@ def checking():
     mid = current_user.id
     profile = Member.get_profile(mid)
     data = list(profile)
+    vid = request.values.get('vid')
 
     # 檢查profile是否填寫完整，0代表完整
     for i in profile:
@@ -397,6 +416,15 @@ def checking():
         if(max_aid < int(i[0][1:])):
             max_aid = int(i[0][1:])
 
+    apply_data = Member.get_order(mid)
+    print(apply_data)
+    for i in apply_data:
+        # print(i[4])
+        # print(i[5])
+        if(mid == i[3] and vid == i[4]):
+            check_applied = 1
+            return redirect(url_for('bookstore.orderlist', check_applied=check_applied))
+
     # 寫入APPLICATION
     input = {
         'aid' : 'a'+ str(max_aid+1),
@@ -408,7 +436,7 @@ def checking():
 
     input2 = {
         'aid' : 'a'+ str(max_aid+1),
-        'vid' : request.values.get('vid'),
+        'vid' : vid,
         'time' : datetime.datetime.now(),
         'status' : 0
     }
