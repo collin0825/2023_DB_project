@@ -18,19 +18,19 @@ Video Link : https://youtu.be/TsTaL7N71MM
   
 - 職缺詳細內容&應徵
 
-  <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20apply.jpg' width='800px'>
+  <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20apply.jpg' width='700px'>
   
 - 我感興趣清單
 
-  <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20interest.jpg' width='600px' border='2px'>
+  <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20interest.jpg' width='700px'>
   
 - 求職紀錄
 
-  <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20record.jpg' width='600px' border='2px'>
+  <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20record.jpg' width='700px'>
   
   - 查看詳細應徵紀錄
   
-    <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20record%20detail.jpg' width='600px' border='2px'>
+    <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20record%20detail.jpg' width='700px'>
     
 ### 處室教職員
 
