@@ -13,15 +13,19 @@ Video Link : https://youtu.be/TsTaL7N71MM
 ## 網站畫面
 ### 學生
 - 職缺總覽(首頁)
+
   <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20vacancy.jpg' width='800px'>
   
 - 職缺詳細內容&應徵
+
   <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20apply.jpg' width='800px'>
   
 - 我感興趣清單
+
   <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20interest.jpg' width='800px'>
   
 - 求職紀錄
+
   <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20record.jpg' width='800px'>
   <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20record%20detail.jpg' width='800px'>
     
