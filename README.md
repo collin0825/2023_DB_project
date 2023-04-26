@@ -33,6 +33,21 @@ Video Link : https://youtu.be/TsTaL7N71MM
     <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20record%20detail.jpg' width='800px'>
     
 ### 處室教職員
+- 職缺管理
+  - 新增職缺
+  - 編輯職缺
+
+
+- 應徵者管理
+  - 查看詳細應徵紀錄
+
+
+- 資料分析
+  - 每月應徵數量分析
+  
+  - 各處室歷年職缺數量分析
+
+
 
 
 ### 檔名頁面對照表
