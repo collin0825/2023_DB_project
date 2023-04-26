@@ -133,7 +133,7 @@ def edit():
 
     else:
         product = show_info()
-        return render_template('edit.html', data=product)
+        return render_template('edit.html', data=product, user=current_user.name)
 
 
 def show_info():
