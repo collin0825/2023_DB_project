@@ -5,7 +5,7 @@
 Video Link : https://youtu.be/TsTaL7N71MM
 
 ## ERD
-<img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/ERD.png' width='600px'>
+<img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/ERD.png' width='600px' border='2'>
 
 ## Relation Schema
 <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/relation%20schema.jpg' width='600px'>
@@ -22,12 +22,15 @@ Video Link : https://youtu.be/TsTaL7N71MM
   
 - 我感興趣清單
 
-  <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20interest.jpg' width='800px'>
+  <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20interest.jpg' width='800px' >
   
 - 求職紀錄
 
-  <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20record.jpg' width='800px'>
-  <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20record%20detail.jpg' width='800px'>
+  <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20record.jpg' width='800px' border='2'>
+  
+  - 查看詳細應徵紀錄
+  
+    <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/user%20record%20detail.jpg' width='800px' border='2'>
     
 ### 處室教職員
 
