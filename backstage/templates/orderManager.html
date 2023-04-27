@@ -21,8 +21,8 @@
 
 
 {% for i in orderData %}
-<div class="modal fade bd-example-modal-lg" id="staticBackdrop{{i.應徵編號}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+<div class="modal fade bd-example-modal-xl" id="staticBackdrop{{i.應徵編號}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">詳細申請資料</h5>
@@ -36,6 +36,7 @@
                             <th><center>系所</center></th>
                             <th><center>年級</center></th>
                             <th><center>姓名</center></th>
+                            <th><center>職缺編號</center></th>
                             <th><center>職缺名稱</center></th>
                             <th><center>可工作時段</center></th>
                             <th><center>加分備註</center></th>
@@ -49,6 +50,7 @@
                             <td> <center>{{ j.系所 }}</center></td>
                             <td> <center>{{ j.年級 }}</center></td>
                             <td> <center>{{ j.姓名 }}</center></td>
+                            <td> <center>{{ j.應徵職缺編號 }}</center></td>
                             <td> <center>{{ j.職缺名稱 }}</center></td>
                             <td> <center>{{ j.可工作時段 }}</center></td>
                             <td> <center>{{ j.加分備註 }}</center></td>
@@ -83,11 +85,12 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th width="15%"><center>學號</center></th>
-                <th width="15%"><center>姓名</center></th>
-                <th width="15%"><center>應徵職缺</center></th>
-                <th width="25%"><center>申請資料</center></th>
-                <th><center>審核狀態</center></th>
+                <th width="10%"><center>學號</center></th>
+                <th width="10%"><center>姓名</center></th>
+                <th width="10%"><center>應徵職缺編號</center></th>
+                <th width="10%"><center>應徵職缺</center></th>
+                <th width="15%"><center>申請資料</center></th>
+                <th width="20%"><center>審核狀態</center></th>
             </tr>
         </thead>
         <tbody id="orderlist">
@@ -95,6 +98,7 @@
             <tr>
                 <td><center>{{ i.學號 }}</center></td>
                 <td><center>{{ i.姓名 }}</center></td>
+                <td><center>{{ i.應徵職缺編號 }}</center></td>
                 <td><center>{{ i.應徵職缺 }}</center></td>
                 <td><center>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{i.應徵編號}}">
