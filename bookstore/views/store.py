@@ -106,6 +106,12 @@ def bookstore():
             else:
                 worktimeStr = worktimeStr + '/' + worktimelist[i]
 
+        print(data[8])
+        if(data[8] == 0):
+            v_status = '已招滿'
+        elif(data[8] == 1):
+            v_status = '招募中'
+
         product = {
             '工讀編號': vid,
             '工讀名稱': vname,
@@ -114,7 +120,8 @@ def bookstore():
             '職缺敘述': description,
             '欲招人數':requiredNum,
             '商品圖片': image,
-            '應聘單位': dep
+            '應聘單位': dep,
+            '職缺狀態': v_status
         }
 
         return render_template('product.html', data = product, user=current_user.name)
