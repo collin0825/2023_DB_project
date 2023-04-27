@@ -390,7 +390,9 @@ def only_cart():
 def profile():
     mid = current_user.id
     data = list(Member.get_profile(mid))
-    
+    # 轉換datetime to yyyy-mm-dd
+    if data[5] != None:
+        data[5] = data[5].date()
 
     # 檢查profile是否填寫完整，0代表完整
     check = 0
@@ -406,7 +408,7 @@ def checking():
 
     # 檢查profile是否填寫完整，0代表完整
     for i in profile:
-        if (i == None):
+        if ((i == None) or (i == 'None')):
             check = 1
             return render_template('profile.html', data=data, user=current_user.name, check=check)
 
