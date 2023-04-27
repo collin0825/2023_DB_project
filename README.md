@@ -34,19 +34,34 @@ Video Link : https://youtu.be/TsTaL7N71MM
     
 ### 處室教職員
 - 職缺管理
-  - 新增職缺
-  - 編輯職缺
 
+ <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/manager%20vacancy.jpg' width='800px'>
+ 
+  - 新增職缺
+  
+   <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/manager%20add%20vacancy.jpg' width='800px'>
+
+  - 編輯職缺
+  
+   <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/manager%20edit%20vacancy.jpg' width='800px'>
 
 - 應徵者管理
+
+  <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/manager%20application.jpg' width='800px'>
+
   - 查看詳細應徵紀錄
+  
+    <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/manager%20application%20detail.jpg' width='800px'>
 
 
 - 資料分析
   - 每月應徵數量分析
+
+    <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/manager%20data%20analysis.jpg' width='800px'>
   
   - 各處室歷年職缺數量分析
-
+  
+    <img src='https://github.com/collin0825/2023_DB_project/blob/master/readmeImage/manager%20data%20analysis%202.jpg' width='800px'>
 
 
 
