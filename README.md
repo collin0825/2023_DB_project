@@ -77,7 +77,8 @@ dashboard | 資料分析 |
 #### 中山求職網
 檔名 | 對照頁面 |
 --- | --- |
-productManager | 職缺管理 |
-orderManager | 應徵者管理 |
-infoManager | 資料維護 |
-dashboard | 資料分析 |
+bookstore | 系統首頁 |
+cart | 我感興趣葉面 |
+orderlist | 應徵紀錄 |
+product | 職缺介紹 |
+profile | 個人資料 |
